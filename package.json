@@ -1,8 +1,8 @@
 {
-  "name": "@opinionated-ts/template",
+  "name": "@opinionated-ts/brain",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/opinionated-ts/template.git"
+    "url": "git+https://github.com/opinionated-ts/brain.git"
   },
   "type": "module",
   "scripts": {
