@@ -13,6 +13,7 @@
     "lint:fix": "oxlint --fix",
     "check": "bun fmt && bun lint && bun cspell",
     "fix": "bun fmt:fix && bun lint:fix",
+    "ai:sync": "bun run ./scripts/update-publish/index.ts && bun run ./scripts/update-local/index.ts",
     "hooks:install": "lefthook install"
   },
   "devDependencies": {
