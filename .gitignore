@@ -111,3 +111,8 @@ dist
 
 # TernJS port file
 .tern-port
+
+
+# this skills are genrate automatically by `bunx skills experimental_install` and should not be tracked in git
+.agents/skills/*
+venv
