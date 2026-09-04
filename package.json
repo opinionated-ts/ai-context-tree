@@ -16,7 +16,7 @@
     "hooks:install": "lefthook install"
   },
   "devDependencies": {
-    "@opinionated-ts/config": "^1.8.4",
+    "@opinionated-ts/config": "1.8.7-next.1",
     "@types/bun": "^1.4.0",
     "@types/node": "^26.2.0"
   },
