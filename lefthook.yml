@@ -1,0 +1,4 @@
+# The following line assumes Bun as the package manager. If you use
+# npm/pnpm/yarn, verify the resolved path to `@opinionated-ts/config` still matches.
+extends:
+  - ./node_modules/@opinionated-ts/config/lefthook.yml

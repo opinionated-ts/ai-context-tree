@@ -1,0 +1,4 @@
+{
+  "extends": "@opinionated-ts/config/tsconfig.json",
+  "include": ["src", "tests", "*.config.*"]
+}
