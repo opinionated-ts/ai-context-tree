@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { copyFolder } from "@/utils/copy-folder";
 
 export async function updateSkills() {
-  const source = join(__dirname, "..", "..", "src", "skills");
+  const source = join(__dirname, "..", "..", "skills");
   const destination = join(__dirname, "..", "..", ".agents", "skills");
 
   console.log(`Updating skills from ${source} to ${destination}`);
