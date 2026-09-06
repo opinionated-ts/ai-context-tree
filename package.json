@@ -17,9 +17,7 @@
     "hooks:install": "lefthook install"
   },
   "devDependencies": {
-    "@opinionated-ts/config": "^1.8.8",
-    "@types/bun": "^1.4.0",
-    "@types/node": "^26.2.0"
+    "@opinionated-ts/config": "^1.8.8"
   },
   "peerDependencies": {
     "typescript": "^7.0.2"
