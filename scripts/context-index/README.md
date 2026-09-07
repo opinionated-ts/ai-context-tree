@@ -38,11 +38,11 @@ It can include markdown formatting, links, code examples, etc.
 # Display tree in terminal (default)
 bun run context:index
 
-# Export to markdown file
-bun run context:index --export markdown
+# Print JSON output
+bun run context:index --format json
 
-# Export to JSON file
-bun run context:index --export json
+# Print compact-tree output
+bun run context:index --format compact-tree
 
 # Specify custom root directory
 bun run scripts/context-index/index.ts --root /path/to/dir

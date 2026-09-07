@@ -15,7 +15,6 @@
     "fix": "bun fmt:fix && bun lint:fix",
     "ai:sync": "bun run ./scripts/update-local/index.ts",
     "context:index": "bun run ./scripts/context-index/index.ts",
-    "context:index:export": "bun run ./scripts/context-index/index.ts --export markdown",
     "hooks:install": "lefthook install"
   },
   "dependencies": {

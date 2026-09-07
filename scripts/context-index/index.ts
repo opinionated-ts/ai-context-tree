@@ -1,11 +1,9 @@
 import { defineCommand, runMain } from "citty";
-import { writeFileSync } from "fs";
-import { resolve } from "path";
 
 import type { ContextTreeJSONRoot } from "./types";
 
 import { findIndexFiles } from "./parse";
-import { renderTreeToJSON, renderTreeToMarkdown, renderTreeToString } from "./render";
+import { renderTreeToJSON, renderTreeToString } from "./render";
 import { buildContextTree, flattenTree } from "./tree";
 
 /**
@@ -21,6 +19,13 @@ const main = defineCommand({
     description: "AI context indexing CLI - discover and organize index.instructions.md files",
   },
   args: {
+    format: {
+      type: "enum",
+      alias: "f",
+      options: ["tree", "json", "compact-tree"],
+      default: "tree",
+      description: "Output format for the generated context tree",
+    },
     root: {
       type: "string",
       alias: "r",
@@ -34,21 +39,11 @@ const main = defineCommand({
       valueHint: "number",
       description: "Maximum directory depth to scan",
     },
-    export: {
-      type: "enum",
-      alias: "e",
-      options: ["markdown", "json"],
-      description: "Export the tree to a `.context-index.<format>` file",
-    },
-    useCache: {
-      type: "boolean",
-      alias: "c",
-      description: "Use cached results if available",
-    },
   },
   async run({ args }) {
     const root = args.root ?? process.cwd();
     const maxDepth = args.depth ? Number.parseInt(args.depth, 10) : undefined;
+    const format = args.format ?? "tree";
 
     console.error(`[context-index] Searching in: ${root}`);
 
@@ -56,29 +51,11 @@ const main = defineCommand({
 
     console.error(`[context-index] Found ${entries.length} index files`);
 
-    // Build hierarchical tree
-    const tree = buildContextTree(entries);
-
-    // Render to terminal (stdout) using programmatic API below
-    const treeOutput = await generateContextTree({ root, format: "tree", depth: maxDepth });
+    const treeOutput = await generateContextTree({ root, format, depth: maxDepth });
     if (typeof treeOutput === "string") {
       console.log("\n" + treeOutput);
     } else {
-      // Fallback to JSON string if unexpected
       console.log(JSON.stringify(treeOutput, null, 2));
-    }
-
-    // Export if requested
-    if (args.export) {
-      const exportPath = resolve(root, `.context-index.${args.export}`);
-
-      const content =
-        args.export === "json"
-          ? JSON.stringify(renderTreeToJSON(tree), null, 2)
-          : renderTreeToMarkdown(tree, "Context Index Tree");
-
-      writeFileSync(exportPath, content, "utf-8");
-      console.error(`[context-index] Exported to: ${exportPath}`);
     }
   },
 });
