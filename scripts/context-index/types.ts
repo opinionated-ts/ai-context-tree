@@ -23,14 +23,3 @@ export interface TreeNode {
   /** Child nodes indexed by name */
   children: Map<string, TreeNode>;
 }
-
-export interface CLIOptions {
-  /** Raíz desde donde buscar (default: cwd) */
-  root: string;
-  /** Profundidad máxima (default: Infinity) */
-  depth?: number;
-  /** Formato de exportación: 'markdown' | 'json' */
-  export?: string;
-  /** Usar caché si existe */
-  useCache?: boolean;
-}
