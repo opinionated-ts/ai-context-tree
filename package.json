@@ -18,6 +18,9 @@
     "context:index:export": "bun run ./scripts/context-index/index.ts --export markdown",
     "hooks:install": "lefthook install"
   },
+  "dependencies": {
+    "citty": "^0.2.2"
+  },
   "devDependencies": {
     "@opinionated-ts/config": "^1.8.8",
     "tsdown": "^0.23.0"
