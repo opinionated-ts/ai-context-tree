@@ -1,8 +1,11 @@
+import { writeFileSync } from "fs";
 import { resolve } from "path";
 
 import type { CLIOptions } from "./types";
 
 import { findIndexFiles } from "./parse";
+import { renderTreeToString, renderTreeToMarkdown, renderTreeToJSON } from "./render";
+import { buildContextTree } from "./tree";
 
 /**
  * Main CLI entry point for context index
@@ -43,14 +46,30 @@ async function main(): Promise<void> {
       maxDepth: options.depth,
     });
 
-    console.error(`[context-index] Found ${entries.length} index files\n`);
+    console.error(`[context-index] Found ${entries.length} index files`);
 
-    // Temporary: just output raw entries to verify parsing works
-    for (const entry of entries) {
-      console.log(entry.filePath);
-      console.log(`  Description: ${entry.description || "(no description)"}`);
-      console.log(`  Body preview: ${entry.bodyContent.substring(0, 60)}...`);
-      console.log();
+    // Build hierarchical tree
+    const tree = buildContextTree(entries);
+
+    // Render to terminal (stdout)
+    const treeOutput = renderTreeToString(tree);
+    console.log("\n" + treeOutput);
+
+    // Export if requested
+    if (options.export) {
+      const exportPath = resolve(options.root, `.context-index.${options.export}`);
+
+      let content: string;
+      if (options.export === "markdown" || options.export === "md") {
+        content = renderTreeToMarkdown(tree, "Context Index Tree");
+      } else if (options.export === "json") {
+        content = JSON.stringify(renderTreeToJSON(tree), null, 2);
+      } else {
+        throw new Error(`Unknown export format: ${options.export}`);
+      }
+
+      writeFileSync(exportPath, content, "utf-8");
+      console.error(`[context-index] Exported to: ${exportPath}`);
     }
 
     process.exit(0);

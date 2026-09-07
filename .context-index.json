@@ -1,0 +1,29 @@
+{
+  "root": {
+    "description": "Project root",
+    "children": [
+      {
+        "path": ".agents",
+        "description": "Configuración de agents, skills e instrucciones personalizadas para diferentes contextos"
+      },
+      {
+        "path": "scripts",
+        "description": "Scripts automáticos y herramientas CLI para mantenimiento del proyecto"
+      },
+      {
+        "path": "skills",
+        "description": "Colección de skills reutilizables para diferentes casos de uso en IA y desarrollo"
+      },
+      {
+        "path": "src",
+        "description": "Código TypeScript y utilidades para procesamiento y transformación de datos",
+        "children": [
+          {
+            "path": "src/utils",
+            "description": "Utilidades compartidas: copiar carpetas, transformaciones, helpers"
+          }
+        ]
+      }
+    ]
+  }
+}

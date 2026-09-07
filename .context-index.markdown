@@ -1,0 +1,33 @@
+# Context Index Tree
+
+## Directory Structure
+
+```
+├── .agents — Configuración de agents, skills e instrucciones personalizad
+├── scripts — Scripts automáticos y herramientas CLI para mantenimiento de
+├── skills — Colección de skills reutilizables para diferentes casos de u
+└── src — Código TypeScript y utilidades para procesamiento y transfor
+    └── src/utils — Utilidades compartidas: copiar carpetas, transformaciones, h
+```
+
+## Details
+
+### `.agents`
+
+Configuración de agents, skills e instrucciones personalizadas para diferentes contextos
+
+### `scripts`
+
+Scripts automáticos y herramientas CLI para mantenimiento del proyecto
+
+### `skills`
+
+Colección de skills reutilizables para diferentes casos de uso en IA y desarrollo
+
+### `src`
+
+Código TypeScript y utilidades para procesamiento y transformación de datos
+
+### `src/utils`
+
+Utilidades compartidas: copiar carpetas, transformaciones, helpers
