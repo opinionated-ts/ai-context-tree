@@ -2,9 +2,11 @@ import { defineCommand, runMain } from "citty";
 import { writeFileSync } from "fs";
 import { resolve } from "path";
 
+import type { ContextTreeJSONRoot } from "./types";
+
 import { findIndexFiles } from "./parse";
 import { renderTreeToJSON, renderTreeToMarkdown, renderTreeToString } from "./render";
-import { buildContextTree } from "./tree";
+import { buildContextTree, flattenTree } from "./tree";
 
 /**
  * Main CLI entry point for the context index system.
@@ -57,9 +59,14 @@ const main = defineCommand({
     // Build hierarchical tree
     const tree = buildContextTree(entries);
 
-    // Render to terminal (stdout)
-    const treeOutput = renderTreeToString(tree);
-    console.log("\n" + treeOutput);
+    // Render to terminal (stdout) using programmatic API below
+    const treeOutput = await generateContextTree({ root, format: "tree", depth: maxDepth });
+    if (typeof treeOutput === "string") {
+      console.log("\n" + treeOutput);
+    } else {
+      // Fallback to JSON string if unexpected
+      console.log(JSON.stringify(treeOutput, null, 2));
+    }
 
     // Export if requested
     if (args.export) {
@@ -75,5 +82,39 @@ const main = defineCommand({
     }
   },
 });
+
+/**
+ * Programmatic API: generateContextTree
+ * - For `json` returns a structured object
+ * - For `tree` and `compact-tree` returns a string
+ */
+export async function generateContextTree(options?: {
+  root?: string;
+  format?: "json" | "tree" | "compact-tree";
+  depth?: number;
+  // colors and other options can be added later
+}): Promise<string | ContextTreeJSONRoot> {
+  const root = options?.root ?? process.cwd();
+  const maxDepth = options?.depth ?? undefined;
+
+  const entries = await findIndexFiles(root, { maxDepth });
+  const tree = buildContextTree(entries);
+
+  const format = options?.format ?? "tree";
+
+  if (format === "json") {
+    return renderTreeToJSON(tree);
+  }
+
+  if (format === "compact-tree") {
+    // compact-tree: one line per folder entry showing the path relative to root
+    const flat = flattenTree(tree).filter((n) => n.depth > 0);
+    const lines = flat.map((n) => n.path);
+    return lines.join("\n");
+  }
+
+  // default: ascii tree
+  return renderTreeToString(tree);
+}
 
 void runMain(main);
