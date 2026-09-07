@@ -36,20 +36,28 @@ const main = defineCommand({
     depth: {
       type: "string",
       alias: "d",
+      default: "10",
       valueHint: "number",
       description: "Maximum directory depth to scan",
     },
   },
   async run({ args }) {
-    const root = args.root ?? process.cwd();
-    const maxDepth = args.depth ? Number.parseInt(args.depth, 10) : undefined;
-    const format = args.format ?? "tree";
+    const root = args.root;
+    const maxDepth = Number.parseInt(args.depth);
+    const format = args.format;
 
-    console.error(`[context-index] Searching in: ${root}`);
+    const prefix = "\x1b[36m[context-index]\x1b[0m";
+
+    const path = `\x1b[33m${root}\x1b[0m`;
 
     const entries = await findIndexFiles(root, { maxDepth });
 
-    console.error(`[context-index] Found ${entries.length} index files`);
+    const count = `\x1b[32m${entries.length}\x1b[0m`;
+
+    if (format !== "json") {
+      console.info(`${prefix} Searching in: ${path}`);
+      console.info(`${prefix} Found ${count} index files`);
+    }
 
     const treeOutput = await generateContextTree({ root, format, depth: maxDepth });
     if (typeof treeOutput === "string") {
@@ -61,10 +69,20 @@ const main = defineCommand({
 });
 
 /**
- * Programmatic API: generateContextTree
- * - For `json` returns a structured object
- * - For `tree` and `compact-tree` returns a string
- */
+
+* Generates a context tree from the index files found under the specified root.
+*
+* @param options - Options controlling how the context tree is generated.
+* @param options.root - Root directory to scan. Defaults to the current working directory.
+* @param options.format - Output format:
+* * `json`: returns a structured {@link ContextTreeJSONRoot} object.
+* * `tree`: returns a human-readable tree as a string.
+* * `compact-tree`: returns one relative path per line.
+* @param options.depth - Maximum directory depth to scan.
+*
+* @returns A structured context tree for `json`, or a formatted string for
+* `tree` and `compact-tree`.
+  */
 export async function generateContextTree(options?: {
   root?: string;
   format?: "json" | "tree" | "compact-tree";
@@ -72,12 +90,12 @@ export async function generateContextTree(options?: {
   // colors and other options can be added later
 }): Promise<string | ContextTreeJSONRoot> {
   const root = options?.root ?? process.cwd();
-  const maxDepth = options?.depth ?? undefined;
+  const maxDepth = options?.depth;
 
   const entries = await findIndexFiles(root, { maxDepth });
   const tree = buildContextTree(entries);
 
-  const format = options?.format ?? "tree";
+  const format = options?.format ?? "json";
 
   if (format === "json") {
     return renderTreeToJSON(tree);
@@ -90,7 +108,6 @@ export async function generateContextTree(options?: {
     return lines.join("\n");
   }
 
-  // default: ascii tree
   return renderTreeToString(tree);
 }
 
