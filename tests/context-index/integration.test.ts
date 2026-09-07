@@ -1,14 +1,13 @@
-import { describe, expect, it, afterAll } from "bun:test";
-import { mkdirSync, writeFileSync, rmSync } from "fs";
-import { join } from "path";
-
-import { findIndexFiles } from "../../scripts/context-index/parse";
+import { findIndexFiles } from "@scripts/context-index/parse";
 import {
   renderTreeToString,
   renderTreeToMarkdown,
   renderTreeToJSON,
-} from "../../scripts/context-index/render";
-import { buildContextTree, findNodeByPath } from "../../scripts/context-index/tree";
+} from "@scripts/context-index/render";
+import { buildContextTree, findNodeByPath } from "@scripts/context-index/tree";
+import { describe, expect, it, afterAll } from "bun:test";
+import { mkdirSync, writeFileSync, rmSync } from "fs";
+import { join } from "path";
 
 // ── Fixtures ─────────────────────────────────────────────────────────
 const FIXTURES = join(import.meta.dir, "__fixtures__/integration");

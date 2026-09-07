@@ -1,4 +1,4 @@
-import type { ContextIndexEntry, TreeNode } from "./types";
+import type { ContextIndexEntry, TreeNode } from "@scripts/context-index/types";
 
 /**
  * Build hierarchical tree structure from flat list of index files

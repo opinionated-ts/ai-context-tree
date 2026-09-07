@@ -1,10 +1,9 @@
+import { generateContextTree } from "@scripts/context-index/index";
 import { describe, expect, it } from "bun:test";
 import { mkdtempSync } from "fs";
 import { mkdirSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
-
-import { generateContextTree } from "../../scripts/context-index/index";
 
 function writeIndex(dir: string, desc?: string) {
   mkdirSync(dir, { recursive: true });

@@ -1,4 +1,8 @@
-import type { TreeNode, ContextTreeJSONNode, ContextTreeJSONRoot } from "./types";
+import type {
+  TreeNode,
+  ContextTreeJSONNode,
+  ContextTreeJSONRoot,
+} from "@scripts/context-index/types";
 
 interface RenderOptions {
   /** Maximo caracteres para descripción (default: 60) */

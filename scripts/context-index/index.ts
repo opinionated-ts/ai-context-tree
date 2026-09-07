@@ -1,10 +1,13 @@
+import type { ContextTreeJSONRoot } from "@scripts/context-index/types";
+
+import { findIndexFiles } from "@scripts/context-index/parse";
+import {
+  renderTreeToCompactString,
+  renderTreeToJSON,
+  renderTreeToString,
+} from "@scripts/context-index/render";
+import { buildContextTree } from "@scripts/context-index/tree";
 import { defineCommand, runMain } from "citty";
-
-import type { ContextTreeJSONRoot } from "./types";
-
-import { findIndexFiles } from "./parse";
-import { renderTreeToCompactString, renderTreeToJSON, renderTreeToString } from "./render";
-import { buildContextTree } from "./tree";
 
 /**
  * Main CLI entry point for the context index system.

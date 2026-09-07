@@ -1,10 +1,9 @@
+import type { ContextIndexEntry } from "@scripts/context-index/types";
+
+import { createGitignoreChecker } from "@scripts/context-index/gitignore";
 import { readFileSync } from "fs";
 import { readdirSync, statSync } from "fs";
 import { resolve, relative } from "path";
-
-import type { ContextIndexEntry } from "./types";
-
-import { createGitignoreChecker } from "./gitignore";
 
 /**
  * Parse index.instructions.md file and extract description and body
