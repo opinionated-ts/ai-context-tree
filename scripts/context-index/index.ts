@@ -72,20 +72,26 @@ const main = defineCommand({
 });
 
 /**
-
-* Generates a context tree from the index files found under the specified root.
-*
-* @param options - Options controlling how the context tree is generated.
-* @param options.root - Root directory to scan. Defaults to the current working directory.
-* @param options.format - Output format:
-* * `json`: returns a structured {@link ContextTreeJSONRoot} object.
-* * `tree`: returns a human-readable tree as a string.
-* * `compact-tree`: returns one relative path per line.
-* @param options.depth - Maximum directory depth to scan.
-*
-* @returns A structured context tree for `json`, or a formatted string for
-* `tree` and `compact-tree`.
-  */
+ * Generates a context tree from the index files found under the specified root.
+ *
+ * @param options - Options controlling how the context tree is generated.
+ * @param options.root - Root directory to scan. Defaults to the current working directory.
+ * @param options.format - Output format:
+ * * `json`: returns a structured {@link ContextTreeJSONRoot} object.
+ * * `tree`: returns a human-readable tree as a string.
+ * * `compact-tree`: returns one relative path per line.
+ * @param options.depth - Maximum directory depth to scan.
+ *
+ * @returns A structured context tree for `json`, or a formatted string for
+ * `tree` and `compact-tree`.
+ */
+export async function generateContextTree<
+  TFormat extends "json" | "tree" | "compact-tree",
+>(options: {
+  root?: string;
+  format: TFormat;
+  depth?: number;
+}): Promise<TFormat extends "json" ? ContextTreeJSONRoot : string>;
 export async function generateContextTree(options?: {
   root?: string;
   format?: "json" | "tree" | "compact-tree";

@@ -21,7 +21,7 @@ describe("compact-tree format", () => {
     const out = await generateContextTree({ root: tmp, format: "compact-tree" });
     expect(typeof out).toBe("string");
 
-    const lines = (out as string).split("\n").filter(Boolean);
+    const lines = out.split("\n").filter(Boolean);
     expect(lines).toContain("src — Source code");
     expect(lines).toContain("src/utils — Utils");
   });
@@ -32,7 +32,7 @@ describe("compact-tree format", () => {
     writeIndex(join(tmp, "empty"));
 
     const out = await generateContextTree({ root: tmp, format: "compact-tree" });
-    const lines = (out as string).split("\n").filter(Boolean);
+    const lines = out.split("\n").filter(Boolean);
 
     // Should list the folder but not include an em-dash
     expect(lines).toContain("empty");
