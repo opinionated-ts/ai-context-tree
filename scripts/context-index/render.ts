@@ -46,6 +46,20 @@ export function renderTreeToString(root: TreeNode, options: RenderOptions = {}):
 }
 
 /**
+ * Render tree as a single compact line per entry, keeping the inline description
+ * when available.
+ */
+export function renderTreeToCompactString(root: TreeNode): string {
+  const flat = Array.from(collectAllNodes(root)).filter((n) => n.depth > 0);
+  const lines = flat.map((n) => {
+    const desc = n.description ? ` — ${n.description}` : "";
+    return `${n.path}${desc}`;
+  });
+
+  return lines.join("\n");
+}
+
+/**
  * Render tree with markdown formatting for file output
  */
 export function renderTreeToMarkdown(root: TreeNode, title: string = "Context Index"): string {

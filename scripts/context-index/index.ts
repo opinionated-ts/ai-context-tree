@@ -3,8 +3,8 @@ import { defineCommand, runMain } from "citty";
 import type { ContextTreeJSONRoot } from "./types";
 
 import { findIndexFiles } from "./parse";
-import { renderTreeToJSON, renderTreeToString } from "./render";
-import { buildContextTree, flattenTree } from "./tree";
+import { renderTreeToCompactString, renderTreeToJSON, renderTreeToString } from "./render";
+import { buildContextTree } from "./tree";
 
 /**
  * Main CLI entry point for the context index system.
@@ -102,10 +102,7 @@ export async function generateContextTree(options?: {
   }
 
   if (format === "compact-tree") {
-    // compact-tree: one line per folder entry showing the path relative to root
-    const flat = flattenTree(tree).filter((n) => n.depth > 0);
-    const lines = flat.map((n) => n.path);
-    return lines.join("\n");
+    return renderTreeToCompactString(tree);
   }
 
   return renderTreeToString(tree);
