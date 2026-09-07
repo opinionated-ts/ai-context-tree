@@ -29,8 +29,9 @@ export function renderTreeToString(root: TreeNode, options: RenderOptions = {}):
           : node.description
         : "";
       const displayDesc = desc ? ` — ${desc}` : "";
+      const name = node.path.split("/").pop() ?? node.path;
 
-      lines.push(`${prefix}${connector}${node.path}${displayDesc}`);
+      lines.push(`${prefix}${connector}${name}${displayDesc}`);
 
       prefix = nextPrefix;
     }
