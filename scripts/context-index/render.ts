@@ -1,4 +1,4 @@
-import type { TreeNode } from "./types";
+import type { TreeNode, ContextTreeJSONNode, ContextTreeJSONRoot } from "./types";
 
 interface RenderOptions {
   /** Maximo caracteres para descripción (default: 60) */
@@ -76,33 +76,36 @@ export function renderTreeToMarkdown(root: TreeNode, title: string = "Context In
 /**
  * Convert tree node to JSON representation recursively
  */
-function nodeToJSON(node: TreeNode): unknown {
+function nodeToJSONNode(node: TreeNode): ContextTreeJSONNode {
   const children = Array.from(node.children.values()).toSorted((a, b) =>
     a.path.localeCompare(b.path),
   );
 
-  if (node.depth === 0) {
-    // Root node
-    return {
-      root: {
-        description: node.description,
-        children: children.map((c) => nodeToJSON(c)),
-      },
-    };
-  }
-
   return {
     path: node.path,
     description: node.description,
-    children: children.length > 0 ? children.map((c) => nodeToJSON(c)) : undefined,
+    children: children.length > 0 ? children.map((c) => nodeToJSONNode(c)) : undefined,
+  };
+}
+
+function nodeToJSONRoot(node: TreeNode): ContextTreeJSONRoot {
+  const children = Array.from(node.children.values()).toSorted((a, b) =>
+    a.path.localeCompare(b.path),
+  );
+
+  return {
+    root: {
+      description: node.description,
+      children: children.map((c) => nodeToJSONNode(c)),
+    },
   };
 }
 
 /**
  * Render tree as JSON structure
  */
-export function renderTreeToJSON(root: TreeNode): unknown {
-  return nodeToJSON(root);
+export function renderTreeToJSON(root: TreeNode): ContextTreeJSONRoot {
+  return nodeToJSONRoot(root);
 }
 
 /**

@@ -23,3 +23,19 @@ export interface TreeNode {
   /** Child nodes indexed by name */
   children: Map<string, TreeNode>;
 }
+
+/**
+ * JSON representation of a tree node returned by `renderTreeToJSON`
+ */
+export interface ContextTreeJSONNode {
+  path?: string;
+  description: string;
+  children?: ContextTreeJSONNode[];
+}
+
+export interface ContextTreeJSONRoot {
+  root: {
+    description: string;
+    children: ContextTreeJSONNode[];
+  };
+}
