@@ -1,12 +1,9 @@
-import type { ContextIndexEntry } from "@scripts/context-index/types";
-
-import {
-  renderTreeToString,
-  renderTreeToMarkdown,
-  renderTreeToJSON,
-} from "@scripts/context-index/render";
-import { buildContextTree } from "@scripts/context-index/tree";
 import { describe, expect, it } from "bun:test";
+
+import type { ContextIndexEntry } from "@/context-tree/types";
+
+import { renderTreeToString, renderTreeToMarkdown, renderTreeToJSON } from "@/context-tree/render";
+import { buildContextTree } from "@/context-tree/tree";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 function entry(

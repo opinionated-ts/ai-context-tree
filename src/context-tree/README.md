@@ -45,31 +45,31 @@ The body provides additional context and can contain any valid Markdown content.
 Display the project tree in the terminal:
 
 ```bash
-bun run scripts/context-index/index.ts
+bun context-tree
 ```
 
 Export the index as JSON:
 
 ```bash
-bun run scripts/context-index/index.ts --format json > context-index.json
+bun context-tree --format json > context-tree.json
 ```
 
 Display a compact tree:
 
 ```bash
-bun run scripts/context-index/index.ts --format compact-tree
+bun context-tree --format compact-tree
 ```
 
 Specify a custom root directory:
 
 ```bash
-bun run scripts/context-index/index.ts --root /path/to/dir
+bun context-tree --root /path/to/dir
 ```
 
 Limit the directory depth:
 
 ```bash
-bun run scripts/context-index/index.ts --depth 3
+bun context-tree --depth 3
 ```
 
 ## Output Formats

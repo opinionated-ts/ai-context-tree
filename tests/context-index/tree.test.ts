@@ -1,12 +1,8 @@
-import type { ContextIndexEntry } from "@scripts/context-index/types";
-
-import {
-  buildContextTree,
-  flattenTree,
-  findNodeByPath,
-  getChildren,
-} from "@scripts/context-index/tree";
 import { describe, expect, it } from "bun:test";
+
+import type { ContextIndexEntry } from "@/context-tree/types";
+
+import { buildContextTree, flattenTree, findNodeByPath, getChildren } from "@/context-tree/tree";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 function entry(

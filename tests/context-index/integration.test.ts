@@ -1,13 +1,10 @@
-import { findIndexFiles } from "@scripts/context-index/parse";
-import {
-  renderTreeToString,
-  renderTreeToMarkdown,
-  renderTreeToJSON,
-} from "@scripts/context-index/render";
-import { buildContextTree, findNodeByPath } from "@scripts/context-index/tree";
 import { describe, expect, it, afterAll } from "bun:test";
 import { mkdirSync, writeFileSync, rmSync } from "fs";
 import { join } from "path";
+
+import { findIndexFiles } from "@/context-tree/parse";
+import { renderTreeToString, renderTreeToMarkdown, renderTreeToJSON } from "@/context-tree/render";
+import { buildContextTree, findNodeByPath } from "@/context-tree/tree";
 
 // ── Fixtures ─────────────────────────────────────────────────────────
 const FIXTURES = join(import.meta.dir, "__fixtures__/integration");
@@ -57,7 +54,7 @@ function cleanup() {
 }
 
 // ── Integration tests ────────────────────────────────────────────────
-describe("context-index full pipeline", () => {
+describe("context-tree full pipeline", () => {
   afterAll(() => cleanup());
 
   it("Task 1: parses and finds all relevant files", async () => {

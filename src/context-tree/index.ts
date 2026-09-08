@@ -1,13 +1,14 @@
-import type { ContextTreeJSONRoot } from "@scripts/context-index/types";
+import { defineCommand, runMain } from "citty";
 
-import { findIndexFiles } from "@scripts/context-index/parse";
+import type { ContextTreeJSONRoot } from "@/context-tree/types";
+
+import { findIndexFiles } from "@/context-tree/parse";
 import {
   renderTreeToCompactString,
   renderTreeToJSON,
   renderTreeToString,
-} from "@scripts/context-index/render";
-import { buildContextTree } from "@scripts/context-index/tree";
-import { defineCommand, runMain } from "citty";
+} from "@/context-tree/render";
+import { buildContextTree } from "@/context-tree/tree";
 
 /**
  * Main CLI entry point for the context index system.
@@ -17,9 +18,8 @@ import { defineCommand, runMain } from "citty";
  */
 const main = defineCommand({
   meta: {
-    name: "context-index",
-    version: "0.1.0",
-    description: "AI context indexing CLI - discover and organize index.instructions.md files",
+    name: "context-tree",
+    description: "Build a context tree from index.instructions.md files",
   },
   args: {
     format: {
@@ -49,7 +49,7 @@ const main = defineCommand({
     const maxDepth = Number.parseInt(args.depth);
     const format = args.format;
 
-    const prefix = "\x1b[36m[context-index]\x1b[0m";
+    const prefix = "\x1b[36m[context-tree]\x1b[0m";
 
     const path = `\x1b[33m${root}\x1b[0m`;
 
