@@ -6,7 +6,7 @@ export default defineConfig([
   // AI assistants can use the skill without requiring the package to be installed.
   {
     entry: "./src/core/cli.ts",
-    outDir: "./skills/context-tree",
+    outDir: "./skills/context-tree/scripts/",
     deps: { alwaysBundle: /.*/ },
     outputOptions: {
       preserveModules: true,
