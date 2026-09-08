@@ -8,8 +8,16 @@
     "type": "git",
     "url": "git+https://github.com/opinionated-ts/ai-context-tree.git"
   },
+  "bin": {
+    "ai-context-tree": "./dist/cli.mjs"
+  },
   "type": "module",
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
+  },
   "scripts": {
+    "build": "tsdown",
     "cspell": "cspell lint .",
     "fmt": "oxfmt --check .",
     "fmt:fix": "oxfmt .",
