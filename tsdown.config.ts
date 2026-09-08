@@ -9,7 +9,15 @@ export default defineConfig([
     outDir: "./skills/context-tree/scripts/",
     deps: { alwaysBundle: /.*/ },
     outputOptions: {
-      preserveModules: true,
+      chunkFileNames: "[name].mjs",
+      codeSplitting: {
+        groups: [
+          {
+            test: /node_modules[\\/]/,
+            name: "node_modules",
+          },
+        ],
+      },
     },
   },
 

@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { readdirSync, statSync } from "fs";
 import { resolve, relative } from "path";
+import { parse } from "yaml";
 
 import type { ContextIndexEntry } from "@/types";
 
@@ -15,26 +16,20 @@ export function parseIndexFile(filePath: string): {
 } {
   const content = readFileSync(filePath, "utf-8");
 
-  // Extract frontmatter between --- delimiters
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
 
-  if (!frontmatterMatch) {
-    // No frontmatter found, treat entire content as body, no description
+  if (!match) {
     return {
       description: "",
       body: content,
     };
   }
 
-  const frontmatter = frontmatterMatch?.[1] ?? "";
-  const body = frontmatterMatch?.[2] ?? content;
-
-  // Parse YAML-like frontmatter (simple key: value extraction)
-  const descriptionMatch = frontmatter.match(/description:\s*['""]?([^'"\n]*)['""]?/);
-  const description = (descriptionMatch?.[1] ?? "").trim();
+  const [, frontmatter = "", body = ""] = match;
+  const metadata = parse(frontmatter);
 
   return {
-    description,
+    description: typeof metadata?.description === "string" ? metadata.description.trim() : "",
     body: body.trim(),
   };
 }

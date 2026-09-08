@@ -30,7 +30,8 @@
     "hooks:install": "lefthook install"
   },
   "dependencies": {
-    "citty": "^0.2.2"
+    "citty": "^0.2.2",
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
     "@opinionated-ts/config": "^1.8.8",
