@@ -2,7 +2,7 @@ import { describe, expect, it, beforeAll, afterAll } from "bun:test";
 import { mkdirSync, writeFileSync, rmSync } from "fs";
 import { join } from "path";
 
-import { parseIndexFile, findIndexFiles } from "@/context-tree/parse";
+import { parseIndexFile, findIndexFiles } from "@/parse";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 const FIXTURES = join(import.meta.dir, "__fixtures__/parse");

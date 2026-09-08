@@ -2,7 +2,7 @@ import { describe, expect, it, afterAll } from "bun:test";
 import { mkdirSync, writeFileSync, rmSync } from "fs";
 import { join } from "path";
 
-import { createGitignoreChecker } from "@/context-tree/gitignore";
+import { createGitignoreChecker } from "@/gitignore";
 
 const FIXTURES = join(import.meta.dir, "__fixtures__/gitignore");
 

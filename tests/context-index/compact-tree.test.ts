@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 
-import { generateContextTree } from "@/context-tree/index";
+import { generateContextTree } from "@/index";
 
 function writeIndex(dir: string, desc?: string) {
   mkdirSync(dir, { recursive: true });

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 
-import type { ContextIndexEntry } from "@/context-tree/types";
+import type { ContextIndexEntry } from "@/types";
 
-import { buildContextTree, flattenTree, findNodeByPath, getChildren } from "@/context-tree/tree";
+import { buildContextTree, flattenTree, findNodeByPath, getChildren } from "@/tree";
 
 // ── Helpers ──────────────────────────────────────────────────────────
 function entry(

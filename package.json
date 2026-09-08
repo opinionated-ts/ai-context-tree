@@ -18,7 +18,7 @@
     "check": "bun fmt && bun lint && bun cspell",
     "fix": "bun fmt:fix && bun lint:fix",
     "ai:sync": "bun run ./scripts/update-local/index.ts",
-    "context-tree": "bun run ./src/context-tree/index.ts",
+    "context-tree": "bun run ./src/core/index.ts",
     "hooks:install": "lefthook install"
   },
   "dependencies": {

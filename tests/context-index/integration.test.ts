@@ -2,9 +2,9 @@ import { describe, expect, it, afterAll } from "bun:test";
 import { mkdirSync, writeFileSync, rmSync } from "fs";
 import { join } from "path";
 
-import { findIndexFiles } from "@/context-tree/parse";
-import { renderTreeToString, renderTreeToMarkdown, renderTreeToJSON } from "@/context-tree/render";
-import { buildContextTree, findNodeByPath } from "@/context-tree/tree";
+import { findIndexFiles } from "@/parse";
+import { renderTreeToString, renderTreeToMarkdown, renderTreeToJSON } from "@/render";
+import { buildContextTree, findNodeByPath } from "@/tree";
 
 // ── Fixtures ─────────────────────────────────────────────────────────
 const FIXTURES = join(import.meta.dir, "__fixtures__/integration");
