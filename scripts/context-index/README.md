@@ -1,23 +1,21 @@
----
-description: "Sistema CLI y MCP de indexación de contexto para IAs basado en archivos index.instructions.md"
----
-
 # Context Index System
 
 ## Overview
 
-The context index system is a CLI tool and MCP integration that automatically discovers and organizes documentation from `index.instructions.md` files across your project. It generates a hierarchical tree view that IAs can use to quickly understand your project structure.
+The Context Tree System is a CLI integration that automatically discovers and organizes documentation from `index.instructions.md` files across a project.
+
+It generates a hierarchical tree that AI assistants can use to quickly understand the project's structure and available context.
 
 ## How It Works
 
-1. **Discovery**: Recursively scans the project for all `index.instructions.md` files
-2. **Parsing**: Extracts YAML frontmatter from each file to get descriptions
-3. **Organization**: Builds a hierarchical tree structure reflecting the directory organization
-4. **Rendering**: Displays the tree in terminal or exports to Markdown/JSON format
+1. **Discovery** — Recursively scans the project for `index.instructions.md` files.
+2. **Parsing** — Extracts YAML frontmatter and directory documentation.
+3. **Organization** — Builds a hierarchical tree based on the directory structure.
+4. **Rendering** — Outputs the tree in terminal or machine-readable formats.
 
 ## File Format
 
-Each `index.instructions.md` file should follow this format:
+Each `index.instructions.md` file should follow this structure:
 
 ```markdown
 ---
@@ -26,63 +24,82 @@ description: "Brief description of this directory's purpose"
 
 ## Detailed Content
 
-This section contains more detailed information about the directory.
-It can include markdown formatting, links, code examples, etc.
+Additional context about the directory.
+
+This can include Markdown formatting, links, code examples, and other
+information useful to AI assistants.
 ```
+
+### Description
+
+The `description` should be a concise phrase or short sentence describing the purpose of the directory.
+
+### Body
+
+The body provides additional context and can contain any valid Markdown content.
 
 ## Usage
 
 ### CLI
 
+Display the project tree in the terminal:
+
 ```bash
-# Display tree in terminal (default)
-bun run context:index
-
-# Print JSON output
-bun run context:index --format json
-
-# Print compact-tree output
-bun run context:index --format compact-tree
-
-# Specify custom root directory
-bun run scripts/context-index/index.ts --root /path/to/dir
-
-# Limit directory depth
-bun run scripts/context-index/index.ts --depth 3
+bun run scripts/context-index/index.ts
 ```
 
-### npm Scripts
+Export the index as JSON:
 
 ```bash
-# View context tree (shorthand)
-bun run context:index
+bun run scripts/context-index/index.ts --format json > context-index.json
+```
 
-# Export markdown index (useful for pre-commit)
-bun run context:index:export
+Display a compact tree:
+
+```bash
+bun run scripts/context-index/index.ts --format compact-tree
+```
+
+Specify a custom root directory:
+
+```bash
+bun run scripts/context-index/index.ts --root /path/to/dir
+```
+
+Limit the directory depth:
+
+```bash
+bun run scripts/context-index/index.ts --depth 3
 ```
 
 ## Output Formats
 
-### Terminal (ASCII Tree)
+### Tree
 
-```
+The default terminal format displays the directory hierarchy with descriptions:
+
+```text
 ├── folder — Description of folder
 ├── another — Another folder description
 └── nested — Parent folder
-    └── nested/child — Child folder description
+    └── child — Child folder description
 ```
 
-### Markdown Export
+### Compact Tree
 
-Generates `.context-index.markdown` with:
+The compact format displays one indexed path per line:
 
-- ASCII tree visualization
-- Detailed descriptions section
-- Headers for easy navigation
+```text
+folder — Description of folder
+another — Another folder description
+nested — Parent folder
+nested/child — Child folder description
+nested/child/deep — Deeply nested directory description
+```
 
-### JSON Export
+### JSON
 
-Generates `.context-index.json` with structured tree data:
+The JSON format provides a machine-readable representation:
 
 ```json
 {
@@ -99,41 +116,14 @@ Generates `.context-index.json` with structured tree data:
 }
 ```
 
-## Integration with IAs
-
-Add to AI system prompts:
-
-```
-Here's the project structure:
-[output from: bun run context:index]
-
-For more details about any section, request the full content of the relevant index.instructions.md file.
-```
-
-## Creation Guidelines
-
-When creating `index.instructions.md` files:
-
-- **Description**: Keep it concise (one phrase or short sentence)
-- **Body**: Use markdown to provide additional context
-- **Depth**: Place them at logical conceptual boundaries
-- **Consistency**: Use consistent tone and style across files
-
-### Recommended Locations
-
-- `/skills/` - Collections of reusable skills
-- `/src/` - Source code organization
-- `/scripts/` - Automation and tools
-- If you use nested skills: `/skills/category/`
-
 ## Features
 
-✅ Respects `.gitignore` patterns  
-✅ Terminal output with descriptions  
-✅ Markdown export for documentation  
-✅ JSON export for programmatic use  
-✅ Configurable depth limiting  
-✅ TypeScript types for integrations
+- Respects `.gitignore` patterns
+- Terminal tree output with descriptions
+- Compact tree output
+- JSON output for programmatic use
+- Configurable root directory
+- Configurable directory depth
 
 ## Future Enhancements
 
@@ -142,4 +132,4 @@ When creating `index.instructions.md` files:
 - [ ] Search functionality
 - [ ] Watch mode for changes
 - [ ] MCP server integration
-- [ ] Custom title and formatting
+- [ ] Proper YAML/frontmatter parsing for complex or multiline values
