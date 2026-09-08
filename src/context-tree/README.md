@@ -45,31 +45,31 @@ The body provides additional context and can contain any valid Markdown content.
 Display the project tree in the terminal:
 
 ```bash
-bun context-tree
+bun ai-context-tree
 ```
 
 Export the index as JSON:
 
 ```bash
-bun context-tree --format json > context-tree.json
+bun ai-context-tree --format json > ai-context-tree.json
 ```
 
 Display a compact tree:
 
 ```bash
-bun context-tree --format compact-tree
+bun ai-context-tree --format compact-tree
 ```
 
 Specify a custom root directory:
 
 ```bash
-bun context-tree --root /path/to/dir
+bun ai-context-tree --root /path/to/dir
 ```
 
 Limit the directory depth:
 
 ```bash
-bun context-tree --depth 3
+bun ai-context-tree --depth 3
 ```
 
 ## Output Formats

@@ -1,5 +1,5 @@
 ---
-description: "`context-tree` implementation for project discovery and AI-readable project trees"
+description: "core implementation for `ai-context-tree`"
 ---
 
 - [index.ts](./index.ts) - Main entry point for generating the context tree output.

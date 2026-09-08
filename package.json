@@ -1,8 +1,12 @@
 {
-  "name": "@opinionated-ts/brain",
+  "name": "ai-context-tree",
+  "bugs": {
+    "url": "https://github.com/opinionated-ts/ai-context-tree/issues",
+    "email": "danhezcode@gmail.com"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/opinionated-ts/brain.git"
+    "url": "git+https://github.com/opinionated-ts/ai-context-tree.git"
   },
   "type": "module",
   "scripts": {

@@ -54,7 +54,7 @@ function cleanup() {
 }
 
 // ── Integration tests ────────────────────────────────────────────────
-describe("context-tree full pipeline", () => {
+describe("ai-context-tree full pipeline", () => {
   afterAll(() => cleanup());
 
   it("Task 1: parses and finds all relevant files", async () => {
