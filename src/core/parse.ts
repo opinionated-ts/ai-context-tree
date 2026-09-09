@@ -44,7 +44,7 @@ export async function findIndexFiles(
   },
 ): Promise<ContextIndexEntry[]> {
   const maxDepth = options?.maxDepth ?? Infinity;
-  const shouldIgnore = await createGitignoreChecker(root);
+  const shouldIgnore = createGitignoreChecker(root);
 
   const results: ContextIndexEntry[] = [];
 

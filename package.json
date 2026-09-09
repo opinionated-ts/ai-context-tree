@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "citty": "^0.2.2",
+    "ignore": "^7.0.9",
     "yaml": "^2.9.0"
   },
   "devDependencies": {

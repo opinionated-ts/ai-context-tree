@@ -17,7 +17,7 @@ describe("createGitignoreChecker", () => {
     const emptyDir = join(FIXTURES, "no-gitignore");
     mkdirSync(emptyDir, { recursive: true });
 
-    const checker = await createGitignoreChecker(emptyDir);
+    const checker = createGitignoreChecker(emptyDir);
 
     expect(checker(join(emptyDir, "anything.txt"))).toBe(false);
     expect(checker(join(emptyDir, "node_modules/foo"))).toBe(false);
@@ -28,7 +28,7 @@ describe("createGitignoreChecker", () => {
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, ".gitignore"), "node_modules/\n", "utf-8");
 
-    const checker = await createGitignoreChecker(dir);
+    const checker = createGitignoreChecker(dir);
 
     expect(checker(join(dir, "node_modules/package/index.js"))).toBe(true);
     expect(checker(join(dir, "src/index.ts"))).toBe(false);
@@ -39,7 +39,7 @@ describe("createGitignoreChecker", () => {
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, ".gitignore"), "*.log\n*.sqlite\n", "utf-8");
 
-    const checker = await createGitignoreChecker(dir);
+    const checker = createGitignoreChecker(dir);
 
     expect(checker(join(dir, "app.log"))).toBe(true);
     expect(checker(join(dir, "data.sqlite"))).toBe(true);
@@ -51,7 +51,7 @@ describe("createGitignoreChecker", () => {
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, ".gitignore"), "dist\ncoverage\n", "utf-8");
 
-    const checker = await createGitignoreChecker(dir);
+    const checker = createGitignoreChecker(dir);
 
     expect(checker(join(dir, "dist/index.js"))).toBe(true);
     expect(checker(join(dir, "coverage/lcov.info"))).toBe(true);
@@ -67,7 +67,7 @@ describe("createGitignoreChecker", () => {
       "utf-8",
     );
 
-    const checker = await createGitignoreChecker(dir);
+    const checker = createGitignoreChecker(dir);
 
     expect(checker(join(dir, "node_modules/pkg"))).toBe(true);
     expect(checker(join(dir, "src/file.ts"))).toBe(false);
@@ -78,7 +78,7 @@ describe("createGitignoreChecker", () => {
     mkdirSync(dir, { recursive: true });
     writeFileSync(join(dir, ".gitignore"), "*.env\n", "utf-8");
 
-    const checker = await createGitignoreChecker(dir);
+    const checker = createGitignoreChecker(dir);
 
     expect(checker(join(dir, ".env"))).toBe(true);
     expect(checker(join(dir, ".env.test"))).toBe(false);
