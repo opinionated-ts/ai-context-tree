@@ -134,6 +134,10 @@ Run `ai-context-tree` again and the directory becomes part of the map.
 
 Every indexed directory has an `index.instructions.md`.
 
+These are **instructions for navigating and understanding a directory**.
+
+They are intentionally different from instructions that define how an AI agent should work, modify code, or follow repository rules.
+
 The frontmatter provides the short description displayed in the map:
 
 ```md
@@ -152,7 +156,27 @@ The body contains deeper local context, such as:
 
 Keep it focused on **understanding and navigating the directory**.
 
-Detailed implementation rules and specialized instructions can remain in your existing documentation and agent configuration.
+This makes `index.instructions.md` complementary to existing instruction systems such as `AGENTS.md`, `RULES.md`, and other `*.instructions.md` files.
+
+Those files can define **rules, behavior, workflows, and implementation instructions**, while `index.instructions.md` provides **instructions for finding and understanding relevant context**.
+
+In short:
+
+```text
+Instruction systems
+    ↓
+How to work
+
+Context instructions
+    ↓
+Where to look
+    ↓
+Source files and documentation
+    ↓
+What the repository contains
+```
+
+`ai-context-tree` does not attempt to replace these systems. It focuses on a different problem: **context discovery and repository navigation**.
 
 ## Output
 
