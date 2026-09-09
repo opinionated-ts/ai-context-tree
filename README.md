@@ -31,7 +31,9 @@ It is the **navigation layer between your repository and the context inside it**
 
 Large repositories contain a lot of implicit knowledge that directory names alone cannot express.
 
-An `index.instructions.md` lets a directory explain itself:
+A directory can contain important context that is difficult to discover without already knowing where to look.
+
+`ai-context-tree` makes that navigation explicit by letting directories provide their own context through `index.instructions.md` files.
 
 ```text
 src/
@@ -43,7 +45,9 @@ src/
     └── index.instructions.md
 ```
 
-The context stays next to the code it describes, while `ai-context-tree` turns those local descriptions into one navigable map.
+These files stay next to the content they describe, while `ai-context-tree` combines them into a single map.
+
+The result is a simple navigation flow:
 
 ```text
 Context map
@@ -54,8 +58,6 @@ Detailed local context
     ↓
 Source files
 ```
-
-This gives humans and AI agents a fast way to **find relevant context before exploring the code itself**.
 
 ## For AI Coding Agents
 
@@ -106,7 +108,7 @@ npx ai-context-tree --root /path/to/directory
 
 ### Add directory context
 
-Create an `index.instructions.md` inside any directory you want to describe:
+Create an `index.instructions.md` inside any directory you want to include in the map:
 
 ```text
 src/core/index.instructions.md
@@ -132,13 +134,11 @@ Run `ai-context-tree` again and the directory becomes part of the map.
 
 ## Context Files
 
-Every indexed directory has an `index.instructions.md`.
+`index.instructions.md` provides **instructions for navigating and understanding a directory**.
 
-These are **instructions for navigating and understanding a directory**.
+It is still an instruction file, but its purpose is different from instructions that define how an agent should work or how code should be implemented.
 
-They are intentionally different from instructions that define how an AI agent should work, modify code, or follow repository rules.
-
-The frontmatter provides the short description displayed in the map:
+The `description` in the frontmatter becomes the directory's short description in the generated map:
 
 ```md
 ---
@@ -146,37 +146,20 @@ description: Core application logic
 ---
 ```
 
-The body contains deeper local context, such as:
+The body provides additional local guidance that helps someone understand the directory and decide where to continue, for example:
 
-- what the directory contains
-- what belongs there
 - important files or subdirectories
+- responsibilities and boundaries
 - relationships with other parts of the repository
-- where to continue exploring
+- locations of deeper context
 
-Keep it focused on **understanding and navigating the directory**.
+Keep the content focused on **navigation and context discovery**.
 
-This makes `index.instructions.md` complementary to existing instruction systems such as `AGENTS.md`, `RULES.md`, and other `*.instructions.md` files.
+`index.instructions.md` is therefore complementary to existing instruction systems such as `AGENTS.md`, `RULES.md`, and other `*.instructions.md` files.
 
-Those files can define **rules, behavior, workflows, and implementation instructions**, while `index.instructions.md` provides **instructions for finding and understanding relevant context**.
+Those systems can define **rules, behavior, workflows, and implementation instructions**.
 
-In short:
-
-```text
-Instruction systems
-    ↓
-How to work
-
-Context instructions
-    ↓
-Where to look
-    ↓
-Source files and documentation
-    ↓
-What the repository contains
-```
-
-`ai-context-tree` does not attempt to replace these systems. It focuses on a different problem: **context discovery and repository navigation**.
+`index.instructions.md` defines **how to navigate the context contained in a directory**.
 
 ## Output
 
@@ -251,16 +234,18 @@ The default format is `tree`.
 It:
 
 1. Finds `index.instructions.md` files.
-2. Reads their metadata and descriptions.
-3. Reconstructs the directory hierarchy.
-4. Produces a human- or machine-readable context map.
-5. Respects configured scan limits and ignored paths.
+2. Reads their metadata and content.
+3. Associates each file with its directory.
+4. Builds the directory hierarchy.
+5. Produces the requested output format.
 
-There is **no AI service involved** and no repository data needs to leave your machine.
+There is *_no AI service involved_- and no repository data needs to leave your machine.
 
 ## A Map, Not a Directory Listing
 
-The output intentionally represents **directories that have been explicitly given context**, rather than reproducing the entire filesystem.
+`ai-context-tree` intentionally maps **contextualized directories**, rather than reproducing the entire filesystem.
+
+A directory appears in the map because it has been given explicit context through an `index.instructions.md` file.
 
 ```text
 Repository
@@ -276,24 +261,29 @@ Repository
     └── docs/index.instructions.md
 ```
 
-The map tells you **where to look**.
-
-The local context file tells you **what to know before looking there**.
+This keeps the map focused on locations that have useful context instead of turning it into another directory listing.
 
 ## Design
 
-`ai-context-tree` does not replace source code, documentation, repository instructions, or AI agent instructions.
+`ai-context-tree` focuses on **context discovery and repository navigation**.
 
-It connects them:
+It does not replace:
+
+- source code
+- documentation
+- repository instructions
+- AI agent instructions
+
+Instead, it gives those existing sources a navigable structure.
 
 ```text
-Code
-  +
-Repository instructions
-  +
-Directory context
-  =
-A repository that is easier to navigate
+Repository
+    │
+    ├── Instructions → how to work
+    │
+    ├── Context      → where to look
+    │
+    └── Content      → what is actually there
 ```
 
 The goal is simple:
