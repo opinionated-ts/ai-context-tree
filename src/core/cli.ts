@@ -55,7 +55,7 @@ const main = defineCommand({
       console.info(`${prefix} Found ${count} index files`);
     }
 
-    const treeOutput = await generateContextTree({ root, format, depth: maxDepth });
+    const treeOutput = await generateContextTree({ root, format, depth: maxDepth, entries });
     if (typeof treeOutput === "string") {
       console.log("\n" + treeOutput);
     } else {

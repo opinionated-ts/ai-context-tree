@@ -1,4 +1,4 @@
-import type { ContextTreeJSONRoot } from "@/types";
+import type { ContextIndexEntry, ContextTreeJSONRoot } from "@/types";
 
 import { findIndexFiles } from "@/parse";
 import { renderTreeToCompactString, renderTreeToJSON, renderTreeToString } from "@/render";
@@ -22,17 +22,23 @@ async function generateContextTree<TFormat extends "json" | "tree" | "compact-tr
   root?: string;
   format: TFormat;
   depth?: number;
+
+  /* @internal */
+  entries?: ContextIndexEntry[];
 }): Promise<TFormat extends "json" ? ContextTreeJSONRoot : string>;
 async function generateContextTree(options?: {
   root?: string;
   format?: "json" | "tree" | "compact-tree";
   depth?: number;
+
+  /* @internal */
+  entries?: ContextIndexEntry[];
   // colors and other options can be added later
 }): Promise<string | ContextTreeJSONRoot> {
   const root = options?.root ?? process.cwd();
   const maxDepth = options?.depth;
 
-  const entries = await findIndexFiles(root, { maxDepth });
+  const entries = options?.entries ? options?.entries : await findIndexFiles(root, { maxDepth });
   const tree = buildContextTree(entries);
 
   const format = options?.format ?? "json";
