@@ -26,7 +26,7 @@ describe("parseIndexFile", () => {
   beforeAll(() => setup());
   afterAll(() => teardown());
 
-  it("extracts description from YAML frontmatter", () => {
+  it("extracts description from YAML frontmatter", async () => {
     const file = join(FIXTURES, "basic.md");
     writeFileSync(
       file,
@@ -34,60 +34,60 @@ describe("parseIndexFile", () => {
       "utf-8",
     );
 
-    const result = parseIndexFile(file);
+    const result = await parseIndexFile(file);
 
     expect(result.description).toBe("A brief description");
     expect(result.body).toBe("Body content here.");
   });
 
-  it("handles frontmatter with single-quoted description", () => {
+  it("handles frontmatter with single-quoted description", async () => {
     const file = join(FIXTURES, "single-quote.md");
     writeFileSync(file, `---\ndescription: 'Single quoted desc'\n---\n\nBody.`, "utf-8");
 
-    const result = parseIndexFile(file);
+    const result = await parseIndexFile(file);
     expect(result.description).toBe("Single quoted desc");
   });
 
-  it("handles frontmatter with unquoted description", () => {
+  it("handles frontmatter with unquoted description", async () => {
     const file = join(FIXTURES, "unquoted.md");
     writeFileSync(file, "---\ndescription: Unquoted description\n---\n\nBody.", "utf-8");
 
-    const result = parseIndexFile(file);
+    const result = await parseIndexFile(file);
     expect(result.description).toBe("Unquoted description");
   });
 
-  it("returns empty description when no frontmatter found", () => {
+  it("returns empty description when no frontmatter found", async () => {
     const file = join(FIXTURES, "no-frontmatter.md");
     writeFileSync(file, "Just plain content without frontmatter.", "utf-8");
 
-    const result = parseIndexFile(file);
+    const result = await parseIndexFile(file);
     expect(result.description).toBe("");
     expect(result.body).toBe("Just plain content without frontmatter.");
   });
 
-  it("returns empty description when frontmatter has no description key", () => {
+  it("returns empty description when frontmatter has no description key", async () => {
     const file = join(FIXTURES, "no-desc-key.md");
     writeFileSync(file, "---\ntitle: Something\nother: value\n---\n\nBody.", "utf-8");
 
-    const result = parseIndexFile(file);
+    const result = await parseIndexFile(file);
     expect(result.description).toBe("");
     expect(result.body).toBe("Body.");
   });
 
-  it("preserves multi-line body content", () => {
+  it("preserves multi-line body content", async () => {
     const file = join(FIXTURES, "multiline.md");
     const body = "## Section 1\n\nFirst paragraph.\n\n## Section 2\n\nSecond paragraph.";
     writeFileSync(file, `---\ndescription: "Multi"\n---\n\n${body}`, "utf-8");
 
-    const result = parseIndexFile(file);
+    const result = await parseIndexFile(file);
     expect(result.body).toBe(body);
   });
 
-  it("trims whitespace from body", () => {
+  it("trims whitespace from body", async () => {
     const file = join(FIXTURES, "trim.md");
     writeFileSync(file, "---\ndescription: desc\n---\n\n   trimmed body   \n", "utf-8");
 
-    const result = parseIndexFile(file);
+    const result = await parseIndexFile(file);
     expect(result.body).toBe("trimmed body");
   });
 });

@@ -1,6 +1,5 @@
-import { readFileSync } from "fs";
-import { readdirSync, statSync } from "fs";
-import { resolve, relative } from "path";
+import { readdir, readFile } from "node:fs/promises";
+import { relative, resolve } from "node:path";
 import { parse } from "yaml";
 
 import type { ContextIndexEntry } from "@/types";
@@ -8,13 +7,13 @@ import type { ContextIndexEntry } from "@/types";
 import { createGitignoreChecker } from "@/gitignore";
 
 /**
- * Parse index.instructions.md file and extract description and body
+ * Parse index.instructions.md file and extract description and body.
  */
-export function parseIndexFile(filePath: string): {
+export async function parseIndexFile(filePath: string): Promise<{
   description: string;
   body: string;
-} {
-  const content = readFileSync(filePath, "utf-8");
+}> {
+  const content = await readFile(filePath, "utf-8");
 
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
 
@@ -35,7 +34,7 @@ export function parseIndexFile(filePath: string): {
 }
 
 /**
- * Recursively find all index.instructions.md files respecting .gitignore
+ * Recursively find all index.instructions.md files respecting .gitignore.
  */
 export async function findIndexFiles(
   root: string,
@@ -46,59 +45,57 @@ export async function findIndexFiles(
   const maxDepth = options?.maxDepth ?? Infinity;
   const shouldIgnore = createGitignoreChecker(root);
 
-  const results: ContextIndexEntry[] = [];
-
-  async function traverse(dir: string, currentDepth: number = 0) {
+  async function traverse(dir: string, currentDepth = 0): Promise<ContextIndexEntry[]> {
     if (currentDepth > maxDepth) {
-      return;
+      return [];
     }
 
-    let entries: string[];
+    let entries;
+
     try {
-      entries = readdirSync(dir);
+      entries = await readdir(dir, { withFileTypes: true });
     } catch {
-      return;
+      return [];
     }
 
-    const subDirectories: string[] = [];
-
-    for (const entry of entries) {
-      const fullPath = resolve(dir, entry);
+    const tasks = entries.map(async (entry): Promise<ContextIndexEntry[] | null> => {
+      const fullPath = resolve(dir, entry.name);
 
       if (shouldIgnore(fullPath)) {
-        continue;
+        return null;
+      }
+
+      if (entry.isDirectory()) {
+        return traverse(fullPath, currentDepth + 1);
+      }
+
+      if (!entry.isFile() || entry.name !== "index.instructions.md") {
+        return null;
       }
 
       try {
-        const stat = statSync(fullPath);
+        const { description, body } = await parseIndexFile(fullPath);
 
-        if (stat.isDirectory()) {
-          subDirectories.push(fullPath);
-        } else if (entry === "index.instructions.md") {
-          const folderPath = dir;
-          const relativeFolderPath = relative(root, folderPath);
-          const { description, body } = parseIndexFile(fullPath);
-
-          results.push({
+        return [
+          {
             filePath: relative(root, fullPath),
-            folderPath: relativeFolderPath || ".",
+            folderPath: relative(root, dir) || ".",
             description,
             bodyContent: body,
             depth: currentDepth,
-          });
-        }
+          },
+        ];
       } catch {
-        // Skip files we can't read
-        continue;
+        return null;
       }
-    }
+    });
 
-    // Process subdirectories in parallel
-    await Promise.all(subDirectories.map((subDir) => traverse(subDir, currentDepth + 1)));
+    const resolvedTasks = await Promise.all(tasks);
+
+    return resolvedTasks.flatMap((result) => result ?? []);
   }
 
-  await traverse(root);
+  const results = await traverse(root);
 
-  // Sort by path for consistent ordering
   return results.toSorted((a, b) => a.filePath.localeCompare(b.filePath));
 }
