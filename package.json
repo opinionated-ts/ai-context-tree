@@ -33,6 +33,7 @@
     "lint:fix": "oxlint --fix",
     "check": "bun fmt && bun lint && bun cspell",
     "fix": "bun fmt:fix && bun lint:fix",
+    "tests": "bun test",
     "ai:sync": "bun run ./scripts/update-local/index.ts",
     "context-tree": "bun run ./src/core/cli.ts",
     "hooks:install": "lefthook install"
