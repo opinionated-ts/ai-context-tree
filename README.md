@@ -11,6 +11,8 @@ Instead of exploring directories to discover what they contain, your repository 
 - where to look next
 - where more detailed context is available
 
+If an AI coding agent asks `ai-context-tree` for context, it can return a map like:
+
 ```text
 .
 ├── src
@@ -59,36 +61,28 @@ Detailed local context
 Source files
 ```
 
-## For AI Coding Agents
+## Quick Start
 
-`ai-context-tree` includes a ready-to-use skill for AI coding agents:
+### Recommended: use the AI coding agent skill
+
+The easiest way to use `ai-context-tree` with an AI coding agent is through the ready-to-use skill:
 
 ```bash
 npx skills add opinionated-ts/ai-context-tree
 ```
 
-The skill teaches an agent to:
+That's enough. The skill handles the context discovery workflow for the agent:
 
 1. Generate the context map.
 2. Identify directories relevant to the task.
 3. Read their `index.instructions.md`.
 4. Use that context to guide further exploration.
 
-For example:
+For most AI coding agent workflows, **you do not need to run `ai-context-tree` manually**.
 
-```text
-src/core — Core application logic
-```
+### Optional: use the CLI directly
 
-points the agent to:
-
-```text
-src/core/index.instructions.md
-```
-
-The agent can understand the directory before opening its source files.
-
-## Quick Start
+You can also use `ai-context-tree` directly when you want to generate or consume the context map yourself.
 
 ### Generate a context map
 
