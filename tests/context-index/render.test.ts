@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 
 import type { ContextIndexEntry } from "@/types";
 
-import { renderTreeToString, renderTreeToMarkdown, renderTreeToJSON } from "@/render";
+import { renderTreeToString, renderTreeToJSON } from "@/render";
 import { buildContextTree } from "@/tree";
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -105,59 +105,6 @@ describe("renderTreeToString", () => {
     expect(lines[0]).toContain("├── a");
     expect(lines[1]).toContain("├── b");
     expect(lines[2]).toContain("└── c");
-  });
-});
-
-// ── renderTreeToMarkdown ─────────────────────────────────────────────
-describe("renderTreeToMarkdown", () => {
-  it("produces valid markdown with title", () => {
-    const tree = build([entry({ folderPath: "src", description: "Source" })]);
-    const md = renderTreeToMarkdown(tree, "My Index");
-
-    expect(md).toContain("# My Index");
-    expect(md).toContain("## Directory Structure");
-    expect(md).toContain("```");
-    expect(md).toContain("## Details");
-  });
-
-  it("uses 'Context Index' as default title", () => {
-    const tree = build([]);
-    const md = renderTreeToMarkdown(tree);
-
-    expect(md).toContain("# Context Index");
-  });
-
-  it("includes tree visualization in code block", () => {
-    const tree = build([entry({ folderPath: "src", description: "Source" })]);
-    const md = renderTreeToMarkdown(tree);
-
-    expect(md).toContain("```");
-    expect(md).toContain("src");
-  });
-
-  it("lists details section with per-node descriptions", () => {
-    const tree = build([
-      entry({ folderPath: "src", description: "Source code" }),
-      entry({ folderPath: "skills", description: "Skill modules" }),
-    ]);
-    const md = renderTreeToMarkdown(tree);
-
-    expect(md).toContain("### `src`");
-    expect(md).toContain("Source code");
-    expect(md).toContain("### `skills`");
-    expect(md).toContain("Skill modules");
-  });
-
-  it("skips nodes without descriptions in details", () => {
-    const tree = build([
-      entry({ folderPath: "src", description: "Has desc" }),
-      entry({ folderPath: "empty", description: "" }),
-    ]);
-    const md = renderTreeToMarkdown(tree);
-
-    expect(md).toContain("### `src`");
-    // Empty description node should not have a heading
-    expect(md).not.toMatch(/### `empty`/);
   });
 });
 

@@ -61,34 +61,6 @@ export function renderTreeToCompactString(root: TreeNode): string {
 }
 
 /**
- * Render tree with markdown formatting for file output
- */
-export function renderTreeToMarkdown(root: TreeNode, title: string = "Context Index"): string {
-  const lines: string[] = [];
-
-  lines.push(`# ${title}\n`);
-  lines.push("## Directory Structure\n");
-  lines.push("```");
-  lines.push(renderTreeToString(root));
-  lines.push("```\n");
-
-  lines.push("## Details\n");
-
-  const allNodes = Array.from(collectAllNodes(root))
-    .filter((n) => n.depth > 0)
-    .toSorted((a, b) => a.path.localeCompare(b.path));
-
-  for (const node of allNodes) {
-    if (node.description) {
-      lines.push(`### \`${node.path}\`\n`);
-      lines.push(`${node.description}\n`);
-    }
-  }
-
-  return lines.join("\n");
-}
-
-/**
  * Convert tree node to JSON representation recursively
  */
 function nodeToJSONNode(node: TreeNode): ContextTreeJSONNode {

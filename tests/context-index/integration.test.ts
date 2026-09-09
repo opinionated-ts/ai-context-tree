@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync, rmSync } from "fs";
 import { join } from "path";
 
 import { findIndexFiles } from "@/parse";
-import { renderTreeToString, renderTreeToMarkdown, renderTreeToJSON } from "@/render";
+import { renderTreeToString, renderTreeToJSON } from "@/render";
 import { buildContextTree, findNodeByPath } from "@/tree";
 
 // ── Fixtures ─────────────────────────────────────────────────────────
@@ -110,17 +110,6 @@ describe("ai-context-tree full pipeline", () => {
         expect(descMatch[1]!.length).toBeLessThanOrEqual(60);
       }
     }
-  });
-
-  it("Task 4: exports to valid markdown", async () => {
-    const entries = await findIndexFiles(FIXTURES);
-    const tree = buildContextTree(entries);
-    const md = renderTreeToMarkdown(tree);
-
-    expect(md).toContain("# Context Index");
-    expect(md).toContain("## Directory Structure");
-    expect(md).toContain("src");
-    expect(md).toContain("skills");
   });
 
   it("Task 4: exports to valid JSON", async () => {
