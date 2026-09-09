@@ -5,28 +5,22 @@ description: Use this skill to understand where relevant information lives in th
 
 # Context Tree CLI
 
-The CLI reads `index.instructions.md` files in a project and generates a tree showing their locations and descriptions. Each folder with a description is documented, and you can explore more details by reading its corresponding `index.instructions.md` file.
+The `ai-context-tree` CLI reads `index.instructions.md` files in a project and generates a tree showing their locations and descriptions. Each folder with a description is documented, and you can explore more details by reading its corresponding `index.instructions.md` file.
 
 ## How to Use the CLI
 
-The CLI is located in the `./scripts/` directory of this skill.
-
-Run it with Bun:
+The CLI is provided by the `ai-context-tree` package and can be run using your preferred package manager.
 
 ```bash
-bun ./scripts/cli.mjs
-```
-
-Node.js is also supported:
-
-```bash
-node ./scripts/cli.mjs
+bunx ai-context-tree
+# pnpm dlx ai-context-tree
+# npx ai-context-tree
 ```
 
 If the skill and project are in different locations, pass the project root explicitly:
 
 ```bash
-bun ./scripts/cli.mjs --root /absolute/path/to/project
+bunx ai-context-tree --root /absolute/path/to/project
 ```
 
 Use `--root` with the absolute path of the project to scan for context.
@@ -42,9 +36,9 @@ Choose the format based on how you intend to use the result:
 Examples:
 
 ```bash
-bun ./scripts/cli.mjs
-bun ./scripts/cli.mjs --format compact-tree
-bun ./scripts/cli.mjs --format json
+bunx ai-context-tree --format tree # default
+bunx ai-context-tree --format compact-tree
+bunx ai-context-tree --format json
 ```
 
 ## What the Tree Shows

@@ -1,6 +1,6 @@
 # Indexing Context
 
-To make a directory available to the CLI, add an `index.instructions.md` file to that directory.
+To make a directory available to the `ai-context-tree` CLI, add an `index.instructions.md` file to that directory.
 
 ## Create an Index
 
@@ -40,7 +40,7 @@ The goal is to help an AI assistant **navigate and understand the directory**, n
 
 ## Index Multiple Directories
 
-Add an `index.instructions.md` file to each directory you want to make available to the CLI.
+Add an `index.instructions.md` file to each directory you want to make available to the `ai-context-tree` CLI.
 
 For example:
 

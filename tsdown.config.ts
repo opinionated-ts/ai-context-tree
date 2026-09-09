@@ -1,29 +1,8 @@
 import { defineConfig } from "tsdown";
 
 export default defineConfig([
-  // Build the self-contained Context Tree skill.
-  // The CLI and all dependencies are bundled into the skill directory so
-  // AI assistants can use the skill without requiring the package to be installed.
-  {
-    entry: "./src/core/cli.ts",
-    outDir: "./skills/context-tree/scripts/",
-    deps: { alwaysBundle: /.*/ },
-    outputOptions: {
-      chunkFileNames: "[name].mjs",
-      codeSplitting: {
-        groups: [
-          {
-            test: /node_modules[\\/]/,
-            name: "node_modules",
-          },
-        ],
-      },
-    },
-  },
-
-  // Build the standalone CLI package.
-  // Dependencies are kept external because the published package provides
-  // the CLI entry point while its runtime dependencies are resolved normally.
+  // Build the CLI package.
+  // This produces the executable entry point for the Context Tree CLI.
   {
     entry: "./src/core/cli.ts",
     outputOptions: {
