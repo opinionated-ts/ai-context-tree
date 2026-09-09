@@ -4,6 +4,8 @@
 
 `ai-context-tree` turns `index.instructions.md` files into a **contextual map of your codebase**.
 
+> ❤️ If you find `ai-context-tree` useful, consider giving the repo a star — it helps the project a lot!
+
 Instead of exploring directories to discover what they contain, your repository can describe:
 
 - what each important directory is for
