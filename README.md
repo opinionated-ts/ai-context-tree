@@ -1,6 +1,4 @@
-# ai-context-tree
-
-> Give humans and AI coding agents a map of your repository.
+# Give humans and AI coding agents a map of your repository
 
 `ai-context-tree` turns `index.instructions.md` files into a **contextual map of your codebase**.
 
