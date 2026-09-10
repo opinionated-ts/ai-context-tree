@@ -1,7 +1,7 @@
 import type { ContextIndexEntry, TreeNode } from "@/types";
 
-function getSortedChildren(node: TreeNode): TreeNode[] {
-  return Array.from(node.children.values()).toSorted((a, b) => a.path.localeCompare(b.path));
+function getOrderedChildren(node: TreeNode): IterableIterator<TreeNode> {
+  return node.children.values();
 }
 
 /**
@@ -62,7 +62,7 @@ export function buildContextTree(entries: ContextIndexEntry[]): TreeNode {
 export function flattenTree(node: TreeNode): TreeNode[] {
   const result: TreeNode[] = [node];
 
-  for (const child of getSortedChildren(node)) {
+  for (const child of getOrderedChildren(node)) {
     result.push(...flattenTree(child));
   }
 
@@ -77,7 +77,7 @@ export function findNodeByPath(node: TreeNode, path: string): TreeNode | null {
     return node;
   }
 
-  for (const child of getSortedChildren(node)) {
+  for (const child of getOrderedChildren(node)) {
     const found = findNodeByPath(child, path);
     if (found) {
       return found;
@@ -91,5 +91,5 @@ export function findNodeByPath(node: TreeNode, path: string): TreeNode | null {
  * Get all direct children of a node
  */
 export function getChildren(node: TreeNode): TreeNode[] {
-  return getSortedChildren(node);
+  return Array.from(getOrderedChildren(node));
 }
