@@ -5,6 +5,15 @@ interface RenderOptions {
   descriptionMaxLength?: number;
 }
 
+function getSortedChildren(node: TreeNode): TreeNode[] {
+  return Array.from(node.children.values()).toSorted((a, b) => a.path.localeCompare(b.path));
+}
+
+function getNodeName(node: TreeNode): string {
+  const lastSeparator = node.path.lastIndexOf("/");
+  return lastSeparator >= 0 ? node.path.slice(lastSeparator + 1) : node.path;
+}
+
 /**
  * Render tree to ASCII art format suitable for terminal display
  */
@@ -25,16 +34,14 @@ export function renderTreeToString(root: TreeNode, options: RenderOptions = {}):
           : node.description
         : "";
       const displayDesc = desc ? ` — ${desc}` : "";
-      const name = node.path.split("/").pop() ?? node.path;
+      const name = getNodeName(node);
 
       lines.push(`${prefix}${connector}${name}${displayDesc}`);
 
       prefix = nextPrefix;
     }
 
-    const children = Array.from(node.children.values()).toSorted((a, b) =>
-      a.path.localeCompare(b.path),
-    );
+    const children = getSortedChildren(node);
 
     for (let i = 0; i < children.length; i++) {
       const isLastChild = i === children.length - 1;
@@ -51,18 +58,27 @@ export function renderTreeToString(root: TreeNode, options: RenderOptions = {}):
  * when available.
  */
 export function renderTreeToCompactString(root: TreeNode): string {
-  const flat = Array.from(collectAllNodes(root)).filter((n) => n.depth > 0 && n.description);
+  const lines: string[] = [];
 
-  return flat.map((n) => `${n.path} — ${n.description?.trim()}`).join("\n");
+  function visit(node: TreeNode): void {
+    if (node.depth > 0 && node.description) {
+      lines.push(`${node.path} — ${node.description.trim()}`);
+    }
+
+    for (const child of getSortedChildren(node)) {
+      visit(child);
+    }
+  }
+
+  visit(root);
+  return lines.join("\n");
 }
 
 /**
  * Convert tree node to JSON representation recursively
  */
 function nodeToJSONNode(node: TreeNode): ContextTreeJSONNode {
-  const children = Array.from(node.children.values()).toSorted((a, b) =>
-    a.path.localeCompare(b.path),
-  );
+  const children = getSortedChildren(node);
 
   return {
     path: node.path,
@@ -72,9 +88,7 @@ function nodeToJSONNode(node: TreeNode): ContextTreeJSONNode {
 }
 
 function nodeToJSONRoot(node: TreeNode): ContextTreeJSONRoot {
-  const children = Array.from(node.children.values()).toSorted((a, b) =>
-    a.path.localeCompare(b.path),
-  );
+  const children = getSortedChildren(node);
 
   return {
     root: {
@@ -89,14 +103,4 @@ function nodeToJSONRoot(node: TreeNode): ContextTreeJSONRoot {
  */
 export function renderTreeToJSON(root: TreeNode): ContextTreeJSONRoot {
   return nodeToJSONRoot(root);
-}
-
-/**
- * Collect all nodes from tree
- */
-function* collectAllNodes(node: TreeNode): Generator<TreeNode> {
-  yield node;
-  for (const child of node.children.values()) {
-    yield* collectAllNodes(child);
-  }
 }
