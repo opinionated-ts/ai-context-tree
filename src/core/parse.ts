@@ -15,6 +15,13 @@ export async function parseIndexFile(filePath: string): Promise<{
 }> {
   const content = await readFile(filePath, "utf-8");
 
+  if (!content.startsWith("---")) {
+    return {
+      description: "",
+      body: content.trim(),
+    };
+  }
+
   const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
 
   if (!match) {
