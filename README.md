@@ -1,4 +1,10 @@
-# Give humans and AI coding agents a map of your repository
+# ai-context-tree
+
+[![npm version](https://img.shields.io/npm/v/ai-context-tree)](https://www.npmjs.com/package/ai-context-tree)
+[![CI](https://img.shields.io/github/actions/workflow/status/opinionated-ts/ai-context-tree/check-and-release.yml?label=CI)](https://github.com/opinionated-ts/ai-context-tree/actions/workflows/check-and-release.yml)
+[![License](https://img.shields.io/github/license/DanhezCode/ai-context-tree)](https://github.com/DanhezCode/ai-context-tree/blob/main/LICENSE)
+<!-- [![npm downloads](https://img.shields.io/npm/dm/ai-context-tree)](https://www.npmjs.com/package/ai-context-tree)
+[![Socket](https://badge.socket.dev/npm/package/ai-context-tree)](https://socket.dev/npm/package/ai-context-tree) -->
 
 `ai-context-tree` turns `index.instructions.md` files into a **contextual map of your codebase**.
 
@@ -233,7 +239,7 @@ It:
 4. Builds the directory hierarchy.
 5. Produces the requested output format.
 
-There is **no AI service involved** - and no repository data needs to leave your machine.
+There is **_no AI service involved_**- and no repository data needs to leave your machine.
 
 ## A Map, Not a Directory Listing
 
