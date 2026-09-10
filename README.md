@@ -86,7 +86,7 @@ The skill guides the agent through the context discovery workflow:
 
 The user or maintainer decides which directories should be indexed and included in the map. The skill helps explain and navigate that structure, but it does not automatically decide the repository's indexing policy.
 
-For most AI coding agent workflows, **you do not need to run `ai-context-tree` manually**.
+For most AI coding agent workflows, the skill is sufficient and is likely the only thing you need.
 
 ### Optional: use the CLI directly
 
