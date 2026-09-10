@@ -17,7 +17,7 @@ Instead of exploring directories to discover what they contain, your repository 
 - where to look next
 - where more detailed context is available
 
-If an AI coding agent asks `ai-context-tree` for context, it can return a map like:
+For example, an AI coding agent can request a context map and receive:
 
 ```text
 .
@@ -35,11 +35,11 @@ If an AI coding agent asks `ai-context-tree` for context, it can return a map li
 
 It is the **navigation layer between your repository and the context inside it**.
 
-## Why?
+## Why Context Maps?
 
 Large repositories contain a lot of implicit knowledge that directory names alone cannot express.
 
-A directory can contain important context that is difficult to discover without already knowing where to look.
+A directory may contain important context that is difficult to discover without already knowing where to look.
 
 `ai-context-tree` makes that navigation explicit by letting directories provide their own context through `index.instructions.md` files.
 
@@ -53,9 +53,7 @@ src/
     └── index.instructions.md
 ```
 
-These files stay next to the content they describe, while `ai-context-tree` combines them into a single map.
-
-The result is a simple navigation flow:
+These files stay next to the content they describe, while `ai-context-tree` combines them into a single map:
 
 ```text
 Context map
@@ -67,6 +65,8 @@ Detailed local context
 Source files
 ```
 
+This gives humans and AI coding agents a structured way to discover repository context without having to explore the entire directory tree first.
+
 ## Quick Start
 
 ### Recommended: use the AI coding agent skill
@@ -77,7 +77,7 @@ The easiest way to use `ai-context-tree` with an AI coding agent is through the 
 npx skills add opinionated-ts/ai-context-tree
 ```
 
-That's enough. The skill handles the context discovery workflow for the agent:
+The skill handles the context discovery workflow for the agent:
 
 1. Generate the context map.
 2. Identify directories relevant to the task.
@@ -89,8 +89,6 @@ For most AI coding agent workflows, **you do not need to run `ai-context-tree` m
 ### Optional: use the CLI directly
 
 You can also use `ai-context-tree` directly when you want to generate or consume the context map yourself.
-
-### Generate a context map
 
 Generate a context map with the package manager of your choice:
 
@@ -136,7 +134,7 @@ Run `ai-context-tree` again and the directory becomes part of the map.
 
 `index.instructions.md` provides **instructions for navigating and understanding a directory**.
 
-It is still an instruction file, but its purpose is different from instructions that define how an agent should work or how code should be implemented.
+Its purpose is different from instruction files that define how an agent should work or how code should be implemented.
 
 The `description` in the frontmatter becomes the directory's short description in the generated map:
 
@@ -146,7 +144,7 @@ description: Core application logic
 ---
 ```
 
-The body provides additional local guidance that helps someone understand the directory and decide where to continue, for example:
+The body provides additional local guidance that helps someone understand the directory and decide where to continue, such as:
 
 - important files or subdirectories
 - responsibilities and boundaries
@@ -155,11 +153,11 @@ The body provides additional local guidance that helps someone understand the di
 
 Keep the content focused on **navigation and context discovery**.
 
-`index.instructions.md` is therefore complementary to existing instruction systems such as `AGENTS.md`, `RULES.md`, and other `*.instructions.md` files.
+`index.instructions.md` is complementary to existing instruction systems such as `AGENTS.md`, `RULES.md`, and other `*.instructions.md` files.
 
 Those systems can define **rules, behavior, workflows, and implementation instructions**.
 
-`index.instructions.md` defines **how to navigate the context contained in a directory**.
+`index.instructions.md` defines **where to look and how to discover the context contained in a directory**.
 
 ## Output
 
@@ -229,17 +227,17 @@ The default format is `tree`.
 
 ## How It Works
 
-`ai-context-tree` is deterministic, local, and provider-independent.
+`ai-context-tree` is **deterministic, local, and provider-independent**.
 
-It:
+It works by:
 
-1. Finds `index.instructions.md` files.
-2. Reads their metadata and content.
-3. Associates each file with its directory.
-4. Builds the directory hierarchy.
-5. Produces the requested output format.
+1. Finding `index.instructions.md` files.
+2. Reading their metadata and content.
+3. Associating each file with its directory.
+4. Building the directory hierarchy.
+5. Producing the requested output format.
 
-There is **_no AI service involved_**- and no repository data needs to leave your machine.
+There is **no AI service involved** — and no repository data needs to leave your machine.
 
 ## A Map, Not a Directory Listing
 

@@ -80,3 +80,7 @@ src/core/index.instructions.md
 2. Use it to identify relevant folders and where information lives.
 3. Read the `index.instructions.md` files for folders that require more context.
 4. Use that context to guide further exploration.
+
+## More information
+
+If the user asks for more information about this skill, or if you need additional information to complete the task, read the [README](https://raw.githubusercontent.com/opinionated-ts/ai-context-tree/main/README.md).
