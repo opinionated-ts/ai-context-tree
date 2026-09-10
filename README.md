@@ -233,7 +233,7 @@ It:
 4. Builds the directory hierarchy.
 5. Produces the requested output format.
 
-There is *_no AI service involved_- and no repository data needs to leave your machine.
+There is **no AI service involved** - and no repository data needs to leave your machine.
 
 ## A Map, Not a Directory Listing
 
