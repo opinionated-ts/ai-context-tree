@@ -35,8 +35,22 @@ describe("compact-tree format", () => {
     const out = await generateContextTree({ root: tmp, format: "compact-tree" });
     const lines = out.split("\n").filter(Boolean);
 
-    // Should list the folder but not include an em-dash
-    expect(lines).toContain("empty");
+    expect(lines).not.toContain("empty");
     expect(lines.some((l) => l.includes("empty —"))).toBe(false);
+  });
+
+  it("skips undocumented intermediate folders in nested paths", async () => {
+    const tmp = mkdtempSync(join(tmpdir(), "ct-"));
+
+    writeIndex(join(tmp, "folder1"));
+    writeIndex(join(tmp, "folder1", "folder2"));
+    writeIndex(join(tmp, "folder1", "folder2", "leaf"), "Leaf");
+
+    const out = await generateContextTree({ root: tmp, format: "compact-tree" });
+    const lines = out.split("\n").filter(Boolean);
+
+    expect(lines).not.toContain("folder1/folder2");
+    expect(lines).not.toContain("folder1/folder2 —");
+    expect(lines).toContain("folder1/folder2/leaf — Leaf");
   });
 });
