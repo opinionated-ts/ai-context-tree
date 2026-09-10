@@ -77,12 +77,14 @@ The easiest way to use `ai-context-tree` with an AI coding agent is through the 
 npx skills add opinionated-ts/ai-context-tree
 ```
 
-The skill handles the context discovery workflow for the agent:
+The skill guides the agent through the context discovery workflow:
 
 1. Generate the context map.
-2. Identify directories relevant to the task.
+2. Inspect the map and decide which directories are relevant to the task.
 3. Read their `index.instructions.md`.
 4. Use that context to guide further exploration.
+
+The user or maintainer decides which directories should be indexed and included in the map. The skill helps explain and navigate that structure, but it does not automatically decide the repository's indexing policy.
 
 For most AI coding agent workflows, **you do not need to run `ai-context-tree` manually**.
 
