@@ -81,6 +81,42 @@ src/core/index.instructions.md
 3. Read the `index.instructions.md` files for folders that require more context.
 4. Use that context to guide further exploration.
 
+## Resolving Associated Indexes
+
+Use `index-for` to resolve which `index.instructions.md` file applies to one or more paths without generating the whole tree.
+
+```bash
+ai-context-tree index-for src/core/file.ts src/core
+ai-context-tree index-for --include-parents src/core/features/api/request.ts
+ai-context-tree index-for --format json src/core/a.ts src/core/b.ts
+```
+
+The default text output groups all inputs that share the same nearest index:
+
+```text
+group: src/core
+inputs: src/core/a.ts, src/core/b.ts
+index: src/core/index.instructions.md
+parents: src/index.instructions.md, index.instructions.md
+```
+
+With `--include-parents`, the resolver includes ancestor indexes in nearest-to-farthest order from the matched directory up to the project root.
+
+The JSON output matches a machine-readable array of groups:
+
+```json
+[
+  {
+    "group": "src/core",
+    "inputs": ["src/core/a.ts", "src/core/b.ts"],
+    "index": "src/core/index.instructions.md",
+    "parents": ["src/index.instructions.md", "index.instructions.md"]
+  }
+]
+```
+
+This grouped format is easier to read than a flat list of repeated `file -> index` pairs, especially when many files share the same nearest context file.
+
 ## More information
 
 If the user asks for more information about this skill, or if you need additional information to complete the task, read the [README](https://raw.githubusercontent.com/opinionated-ts/ai-context-tree/main/README.md).
