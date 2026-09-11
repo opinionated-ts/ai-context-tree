@@ -1,8 +1,32 @@
 import type { TreeNode, ContextTreeJSONNode, ContextTreeJSONRoot } from "@/types";
 
+import type { ResolvedIndexGroup } from "./file";
+
 interface RenderOptions {
   /** Maximo caracteres para descripción (default: 60) */
   descriptionMaxLength?: number;
+}
+
+export function renderIndexForText(results: ResolvedIndexGroup[]): string {
+  if (results.length === 0) {
+    return "No associated index files found.";
+  }
+
+  return results
+    .map((group) => {
+      const lines = [
+        `group: ${group.group}`,
+        `inputs: ${group.inputs.length > 0 ? group.inputs.join(", ") : "-"}`,
+        `index: ${group.index || "-"}`,
+      ];
+
+      if (group.parents.length > 0) {
+        lines.push(`parents: ${group.parents.join(", ")}`);
+      }
+
+      return lines.join("\n");
+    })
+    .join("\n\n");
 }
 
 function getOrderedChildren(node: TreeNode): IterableIterator<TreeNode> {

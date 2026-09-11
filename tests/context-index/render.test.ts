@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 
 import type { ContextIndexEntry } from "@/types";
 
-import { renderTreeToString, renderTreeToJSON } from "@/render";
+import { renderIndexForText, renderTreeToString, renderTreeToJSON } from "@/render";
 import { buildContextTree } from "@/tree";
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -21,6 +21,32 @@ function entry(
 function build(entries: ContextIndexEntry[]) {
   return buildContextTree(entries);
 }
+
+describe("renderIndexForText", () => {
+  it("renders grouped paths with parent indexes when present", () => {
+    const output = renderIndexForText([
+      {
+        group: "src/core",
+        inputs: ["src/core/a.ts", "src/core/b.ts"],
+        index: "src/core/index.instructions.md",
+        parents: ["src/index.instructions.md", "index.instructions.md"],
+      },
+    ]);
+
+    expect(output).toBe(
+      [
+        "group: src/core",
+        "inputs: src/core/a.ts, src/core/b.ts",
+        "index: src/core/index.instructions.md",
+        "parents: src/index.instructions.md, index.instructions.md",
+      ].join("\n"),
+    );
+  });
+
+  it("returns a friendly empty state when no results are available", () => {
+    expect(renderIndexForText([])).toBe("No associated index files found.");
+  });
+});
 
 // ── renderTreeToString ───────────────────────────────────────────────
 describe("renderTreeToString", () => {

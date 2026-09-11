@@ -4,6 +4,8 @@ import { findIndexFiles } from "@/parse";
 import { renderTreeToCompactString, renderTreeToJSON, renderTreeToString } from "@/render";
 import { buildContextTree } from "@/tree";
 
+import { resolveIndexForPath, resolveIndexForPaths, type ResolvedIndexGroup } from "./file";
+
 /**
  * Generates a context tree from the index files found under the specified root.
  *
@@ -54,5 +56,11 @@ async function generateContextTree(options?: {
   return renderTreeToString(tree);
 }
 
-export { generateContextTree, type ContextTreeJSONRoot };
+export {
+  generateContextTree,
+  resolveIndexForPath,
+  resolveIndexForPaths,
+  type ResolvedIndexGroup,
+  type ContextTreeJSONRoot,
+};
 export default generateContextTree;
