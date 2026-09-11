@@ -1,7 +1,52 @@
 import { defineCommand, runMain } from "citty";
 
+import { resolveIndexForPaths } from "./file";
 import { generateContextTree } from "./index";
 import { findIndexFiles } from "./parse";
+import { renderIndexForText } from "./render";
+
+export const indexFor = "index-for";
+
+const indexForCommand = defineCommand({
+  meta: {
+    name: indexFor,
+    description: "Resolve the nearest associated index.instructions.md file for one or more paths",
+  },
+  args: {
+    root: {
+      type: "string",
+      alias: "r",
+      valueHint: "path",
+      default: process.cwd(),
+      description: "Project root used to resolve relative paths",
+    },
+    includeParents: {
+      type: "boolean",
+      alias: "p",
+      description: "Include ancestor index files from the nearest match up to the project root",
+    },
+    format: {
+      type: "enum",
+      alias: "f",
+      options: ["text", "json"],
+      default: "text",
+      description: "Output format for the associated index resolution",
+    },
+  },
+  async run({ args }) {
+    const groups = await resolveIndexForPaths(args._, {
+      root: args.root,
+      includeParents: args.includeParents,
+    });
+
+    if (args.format === "json") {
+      console.log(JSON.stringify(groups, null, 2));
+      return;
+    }
+
+    console.log(renderIndexForText(groups));
+  },
+});
 
 /**
  * Main CLI entry point for the context index system.
@@ -37,7 +82,14 @@ const main = defineCommand({
       description: "Maximum directory depth to scan",
     },
   },
+  subCommands: {
+    "index-for": indexForCommand,
+  },
   async run({ args }) {
+    if (args._.includes(indexFor)) {
+      return;
+    }
+
     const root = args.root;
     const maxDepth = Number.parseInt(args.depth);
     const format = args.format;
