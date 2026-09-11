@@ -7,6 +7,12 @@
       "skillPath": "skills/conventional-commit-message/SKILL.md",
       "computedHash": "6ae250d67edc757e2e54163dae2d32f7b44bd8827231cbab2895db8fc0331ac3"
     },
+    "dependency-evaluation": {
+      "source": "opinionated-ts/brain",
+      "sourceType": "github",
+      "skillPath": "skills/dependency-evaluation/SKILL.md",
+      "computedHash": "c9d20b12511b05cb9d49eb92d9cdc67632957407e0ba060cdb691dfcae0c2089"
+    },
     "ponytail": {
       "source": "dietrichgebert/ponytail",
       "sourceType": "github",
