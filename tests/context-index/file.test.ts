@@ -67,7 +67,7 @@ describe("resolveIndexForPaths", () => {
       group: "src/core",
       index: "src/core/index.instructions.md",
       inputs: ["src/core", "src/core/file.ts"],
-      parents: [],
+      parents: ["src/index.instructions.md", "index.instructions.md"],
     });
   });
 
@@ -88,7 +88,6 @@ describe("resolveIndexForPaths", () => {
   it("includes parent indexes in nearest-to-farthest order when requested", async () => {
     const result = await resolveIndexForPaths(["src/core/features/api/request.ts"], {
       root: FIXTURES,
-      includeParents: true,
     });
 
     expect(result).toHaveLength(1);
@@ -104,6 +103,20 @@ describe("resolveIndexForPaths", () => {
     ]);
   });
 
+  it("skips collecting parent indexes once the nearest index is found", async () => {
+    const result = await resolveIndexForPaths(["src/core/features/api/request.ts"], {
+      root: FIXTURES,
+      skipParents: true,
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      group: "src/core/features/api",
+      index: "src/core/features/api/index.instructions.md",
+    });
+    expect(result[0]?.parents).toEqual([]);
+  });
+
   it("respects project root boundaries and .gitignore", async () => {
     const result = await resolveIndexForPaths(
       ["ignored/index.instructions.md", "src/core/file.ts"],
@@ -113,5 +126,24 @@ describe("resolveIndexForPaths", () => {
     expect(result).toHaveLength(1);
     expect(result[0]?.group).toBe("src/core");
     expect(result[0]?.index).toBe("src/core/index.instructions.md");
+  });
+
+  it("stops climbing above the configured root boundary", async () => {
+    const nestedRoot = join(FIXTURES, "src");
+    const result = await resolveIndexForPaths(["core/features/api/request.ts"], {
+      root: nestedRoot,
+    });
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      group: "core/features/api",
+      index: "core/features/api/index.instructions.md",
+    });
+    expect(result[0]?.parents).toEqual([
+      "core/features/index.instructions.md",
+      "core/index.instructions.md",
+      "index.instructions.md",
+    ]);
+    expect(result[0]?.parents).not.toContain("../index.instructions.md");
   });
 });

@@ -2,7 +2,6 @@ import { existsSync, statSync } from "node:fs";
 import { dirname, relative, resolve, sep } from "node:path";
 
 import { createGitignoreChecker } from "@/gitignore";
-import { findIndexFiles } from "@/parse";
 
 export interface ResolvedIndexGroup {
   group: string;
@@ -13,7 +12,7 @@ export interface ResolvedIndexGroup {
 
 export interface ResolveIndexForPathsOptions {
   root?: string;
-  includeParents?: boolean;
+  skipParents?: boolean;
 }
 
 function normalizeProjectRelativePath(root: string, input: string): string | null {
@@ -35,44 +34,12 @@ function normalizeProjectRelativePath(root: string, input: string): string | nul
   return relativePath.split(sep).join("/");
 }
 
-function getParentsForGroup(
-  root: string,
-  group: string,
-  indexPathsByFolder: Map<string, string>,
-): string[] {
-  if (group === ".") {
-    return [];
-  }
-
-  const parents: string[] = [];
-  let current = resolve(root, group);
-
-  while (true) {
-    current = dirname(current);
-
-    if (current === root) {
-      const rootIndex = indexPathsByFolder.get(".");
-      if (rootIndex) {
-        parents.push(rootIndex);
-      }
-      break;
-    }
-
-    const nextGroup = relative(root, current).split(sep).join("/") || ".";
-    const parentIndex = indexPathsByFolder.get(nextGroup);
-    if (parentIndex) {
-      parents.push(parentIndex);
-    }
-  }
-
-  return parents;
-}
-
 function getNearestIndexForPath(
   root: string,
   relativeInput: string,
-  indexPathsByFolder: Map<string, string>,
-): { group: string; index: string } | null {
+  shouldIgnore: (path: string) => boolean,
+  skipParents: boolean,
+): { group: string; index: string; parents: string[] } | null {
   const absoluteInput = resolve(root, relativeInput);
 
   if (!existsSync(absoluteInput)) {
@@ -80,24 +47,51 @@ function getNearestIndexForPath(
   }
 
   let current = statSync(absoluteInput).isDirectory() ? absoluteInput : dirname(absoluteInput);
+  let nearest: { group: string; index: string } | null = null;
+  const parents: string[] = [];
 
   while (true) {
     const relativeDirectory = relative(root, current).split(sep).join("/") || ".";
-    const indexPath = indexPathsByFolder.get(relativeDirectory);
+    const indexPath = resolve(current, "index.instructions.md");
 
-    if (indexPath) {
-      return {
-        group: relativeDirectory,
-        index: indexPath,
-      };
+    if (existsSync(indexPath) && !shouldIgnore(indexPath)) {
+      const normalizedIndex = relative(root, indexPath).split(sep).join("/");
+
+      if (!nearest) {
+        nearest = {
+          group: relativeDirectory,
+          index: normalizedIndex,
+        };
+
+        if (skipParents) {
+          break;
+        }
+      } else {
+        parents.push(normalizedIndex);
+      }
     }
 
     if (current === root) {
-      return null;
+      break;
     }
 
-    current = dirname(current);
+    const parent = dirname(current);
+    if (parent === current) {
+      break;
+    }
+
+    current = parent;
   }
+
+  if (!nearest) {
+    return null;
+  }
+
+  return {
+    group: nearest.group,
+    index: nearest.index,
+    parents: skipParents ? [] : parents,
+  };
 }
 
 export async function resolveIndexForPaths(
@@ -107,16 +101,10 @@ export async function resolveIndexForPaths(
   const root = resolve(options.root ?? process.cwd());
   const inputPaths = Array.isArray(paths) ? paths : [paths];
   const shouldIgnore = createGitignoreChecker(root);
-  const entries = await findIndexFiles(root);
-  const indexPathsByFolder = new Map<string, string>();
-
-  for (const entry of entries) {
-    const folder = entry.folderPath === "." ? "." : entry.folderPath.split(sep).join("/");
-    indexPathsByFolder.set(folder, entry.filePath);
-  }
-
   const groups = new Map<string, ResolvedIndexGroup>();
 
+  // `root` is the upper boundary for ancestor lookup: we start from each input path,
+  // walk upward toward its parent directories, and stop once we reach `root`.
   for (const rawInput of inputPaths) {
     const normalizedInput = normalizeProjectRelativePath(root, rawInput);
 
@@ -129,7 +117,12 @@ export async function resolveIndexForPaths(
       continue;
     }
 
-    const nearest = getNearestIndexForPath(root, normalizedInput, indexPathsByFolder);
+    const nearest = getNearestIndexForPath(
+      root,
+      normalizedInput,
+      shouldIgnore,
+      !!options.skipParents,
+    );
 
     if (!nearest) {
       continue;
@@ -144,9 +137,7 @@ export async function resolveIndexForPaths(
 
     previous.inputs.push(normalizedInput);
     previous.index = nearest.index;
-    previous.parents = options.includeParents
-      ? getParentsForGroup(root, nearest.group, indexPathsByFolder)
-      : [];
+    previous.parents = options.skipParents ? [] : nearest.parents;
     groups.set(nearest.group, previous);
   }
 

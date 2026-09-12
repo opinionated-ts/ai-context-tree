@@ -4,24 +4,42 @@ When modifying files or directories covered by Context Tree indexes, check the a
 
 ## Check Associated Indexes
 
-Use `index-for` to resolve the nearest index for each changed path:
+Use `index-for` to resolve the nearest index for each changed path.
+
+Example:
 
 ```bash
-ai-context-tree index-for src/core/file.ts src/core
+# start from the file path and walk upward
+# stop when reaching this root boundary
+bunx ai-context-tree index-for --root . src/features/api/request.ts
 ```
 
-For changes that may also affect broader context, include ancestor indexes:
+This means:
+
+- start at `src/features/api`
+- then `src/features`
+- then `src/core`
+- then `src`
+- stop at `.` (or the configured `root`)
+- keep collecting parent indexes unless `--skip-parents` is used
 
 ```bash
-ai-context-tree index-for --include-parents src/core/features/api/request.ts
+# stop at the first match and ignore ancestors
+bunx ai-context-tree index-for --skip-parents src/core/features/api/request.ts
 ```
 
-`--include-parents` is generally unnecessary when following the [Recommended Indexing Strategy](<skill-path>/references/recommended-indexing-strategy.md), unless the change affects context that is intentionally represented by a higher-level index.
+`--skip-parents` does not change where the search starts; it only stops the upward walk sooner, stops at the first matching index and ignores ancestor indexes, which is generally the default recommended behavior when using the [<skill-path>/references/recommended-indexing-strategy.md](./recommended-indexing-strategy.md).
 
-For programmatic workflows, use JSON output:
+## Output Formats
+
+Choose the format based on how you intend to use the result:
+
+- `yaml` — Human-readable structured output for inspection, editing, or configuration-oriented workflows.
+- `json` — Machine-readable structure for programmatic use or preservation.
 
 ```bash
-ai-context-tree index-for --format json src/core/a.ts src/core/b.ts
+bunx ai-context-tree index-for --format yaml
+bunx ai-context-tree index-for --format json # default
 ```
 
 When multiple paths share the same nearest index, `index-for` groups them together. Use these groups to determine which indexes need to be reviewed rather than checking paths individually.

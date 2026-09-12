@@ -3,7 +3,6 @@ import { defineCommand, runMain } from "citty";
 import { resolveIndexForPaths } from "./file";
 import { generateContextTree } from "./index";
 import { findIndexFiles } from "./parse";
-import { renderIndexForText } from "./render";
 
 export const indexFor = "index-for";
 
@@ -18,33 +17,35 @@ const indexForCommand = defineCommand({
       alias: "r",
       valueHint: "path",
       default: process.cwd(),
-      description: "Project root used to resolve relative paths",
+      description:
+        "Upper boundary: walk upward from the input paths, resolve the nearest index, and collect parent indexes until this root unless --skip-parents is used",
     },
-    includeParents: {
+    ["skip-parents"]: {
       type: "boolean",
-      alias: "p",
-      description: "Include ancestor index files from the nearest match up to the project root",
+      alias: "s",
+      description: "Stop at the first matching index and do not include parent indexes",
     },
     format: {
       type: "enum",
       alias: "f",
-      options: ["text", "json"],
-      default: "text",
+      options: ["json", "yaml"],
+      default: "json",
       description: "Output format for the associated index resolution",
     },
   },
   async run({ args }) {
     const groups = await resolveIndexForPaths(args._, {
       root: args.root,
-      includeParents: args.includeParents,
+      skipParents: args["skip-parents"],
     });
 
-    if (args.format === "json") {
+    if (args.format === "yaml") {
+      // TODO: implement YAML rendering later.
       console.log(JSON.stringify(groups, null, 2));
       return;
     }
 
-    console.log(renderIndexForText(groups));
+    console.log(JSON.stringify(groups, null, 2));
   },
 });
 
