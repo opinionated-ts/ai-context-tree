@@ -1,8 +1,15 @@
 import { describe, expect, it } from "bun:test";
+import { parse as parseYaml } from "yaml";
 
 import type { ContextIndexEntry } from "@/types";
 
-import { renderIndexForText, renderTreeToString, renderTreeToJSON } from "@/render";
+import {
+  renderIndexToJSON,
+  renderIndexToYAML,
+  renderTreeToJSON,
+  renderTreeToObject,
+  renderTreeToString,
+} from "@/render";
 import { buildContextTree } from "@/tree";
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -22,9 +29,9 @@ function build(entries: ContextIndexEntry[]) {
   return buildContextTree(entries);
 }
 
-describe("renderIndexForText", () => {
-  it("renders grouped paths with parent indexes when present", () => {
-    const output = renderIndexForText([
+describe("renderIndex", () => {
+  it("renders grouped results as valid JSON", () => {
+    const json = renderIndexToJSON([
       {
         group: "src/core",
         inputs: ["src/core/a.ts", "src/core/b.ts"],
@@ -33,18 +40,36 @@ describe("renderIndexForText", () => {
       },
     ]);
 
-    expect(output).toBe(
-      [
-        "group: src/core",
-        "inputs: src/core/a.ts, src/core/b.ts",
-        "index: src/core/index.instructions.md",
-        "parents: src/index.instructions.md, index.instructions.md",
-      ].join("\n"),
-    );
+    expect(() => JSON.parse(json)).not.toThrow();
+    expect(JSON.parse(json)).toEqual([
+      {
+        group: "src/core",
+        inputs: ["src/core/a.ts", "src/core/b.ts"],
+        index: "src/core/index.instructions.md",
+        parents: ["src/index.instructions.md", "index.instructions.md"],
+      },
+    ]);
   });
 
-  it("returns a friendly empty state when no results are available", () => {
-    expect(renderIndexForText([])).toBe("No associated index files found.");
+  it("renders grouped results as valid YAML", () => {
+    const yaml = renderIndexToYAML([
+      {
+        group: "src/core",
+        inputs: ["src/core/a.ts", "src/core/b.ts"],
+        index: "src/core/index.instructions.md",
+        parents: ["src/index.instructions.md", "index.instructions.md"],
+      },
+    ]);
+
+    expect(() => parseYaml(yaml)).not.toThrow();
+    expect(parseYaml(yaml)).toEqual([
+      {
+        group: "src/core",
+        inputs: ["src/core/a.ts", "src/core/b.ts"],
+        index: "src/core/index.instructions.md",
+        parents: ["src/index.instructions.md", "index.instructions.md"],
+      },
+    ]);
   });
 });
 
@@ -134,13 +159,13 @@ describe("renderTreeToString", () => {
   });
 });
 
-// ── renderTreeToJSON ─────────────────────────────────────────────────
-describe("renderTreeToJSON", () => {
+// ── renderTreeToObject / renderTreeToJSON ─────────────────────────────
+describe("renderTreeToObject", () => {
   it("produces root object with children", () => {
     const tree = build([entry({ folderPath: "src", description: "Source" })]);
-    const json = renderTreeToJSON(tree);
+    const object = renderTreeToObject(tree);
 
-    expect(json).toEqual({
+    expect(object).toEqual({
       root: {
         description: "Project root",
         children: [
@@ -158,9 +183,9 @@ describe("renderTreeToJSON", () => {
       entry({ folderPath: "src", description: "Source" }),
       entry({ folderPath: "src/utils", description: "Utils" }),
     ]);
-    const json = renderTreeToJSON(tree);
+    const object = renderTreeToObject(tree);
 
-    expect(json).toEqual({
+    expect(object).toEqual({
       root: {
         description: "Project root",
         children: [
@@ -181,9 +206,9 @@ describe("renderTreeToJSON", () => {
 
   it("omits children key when node has no children", () => {
     const tree = build([entry({ folderPath: "src", description: "Source" })]);
-    const json = renderTreeToJSON(tree);
+    const object = renderTreeToObject(tree);
 
-    expect(json).toEqual({
+    expect(object).toEqual({
       root: {
         description: "Project root",
         children: [
@@ -195,16 +220,32 @@ describe("renderTreeToJSON", () => {
       },
     });
   });
+});
 
-  it("produces valid JSON string", () => {
+describe("renderTreeToJSON", () => {
+  it("produces pretty-printed JSON string", () => {
     const tree = build([
       entry({ folderPath: "src", description: "Source" }),
       entry({ folderPath: "skills", description: "Skills" }),
     ]);
     const json = renderTreeToJSON(tree);
-    const str = JSON.stringify(json, null, 2);
+    const parsed = JSON.parse(json);
 
-    // Must be valid JSON
-    expect(() => JSON.parse(str)).not.toThrow();
+    expect(parsed).toEqual({
+      root: {
+        description: "Project root",
+        children: [
+          {
+            path: "skills",
+            description: "Skills",
+          },
+          {
+            path: "src",
+            description: "Source",
+          },
+        ],
+      },
+    });
+    expect(json).toContain("\n");
   });
 });

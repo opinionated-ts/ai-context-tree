@@ -117,10 +117,9 @@ describe("ai-context-tree full pipeline", () => {
     const tree = buildContextTree(entries);
     const json = renderTreeToJSON(tree);
 
-    const str = JSON.stringify(json);
-    expect(() => JSON.parse(str)).not.toThrow();
+    expect(() => JSON.parse(json)).not.toThrow();
 
-    const parsed = JSON.parse(str);
+    const parsed = JSON.parse(json);
     expect(parsed.root).toBeDefined();
     expect(parsed.root.children).toBeArrayOfSize(2);
   });

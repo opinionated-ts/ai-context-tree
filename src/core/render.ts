@@ -1,5 +1,7 @@
 import type { TreeNode, ContextTreeJSONNode, ContextTreeJSONRoot } from "@/types";
 
+import { stringifyJSON, stringifyYAML } from "@/utils/serialize";
+
 import type { ResolvedIndexGroup } from "./file";
 
 interface RenderOptions {
@@ -7,26 +9,12 @@ interface RenderOptions {
   descriptionMaxLength?: number;
 }
 
-export function renderIndexForText(results: ResolvedIndexGroup[]): string {
-  if (results.length === 0) {
-    return "No associated index files found.";
-  }
+export function renderIndexToJSON(results: ResolvedIndexGroup[]): string {
+  return stringifyJSON(results);
+}
 
-  return results
-    .map((group) => {
-      const lines = [
-        `group: ${group.group}`,
-        `inputs: ${group.inputs.length > 0 ? group.inputs.join(", ") : "-"}`,
-        `index: ${group.index || "-"}`,
-      ];
-
-      if (group.parents.length > 0) {
-        lines.push(`parents: ${group.parents.join(", ")}`);
-      }
-
-      return lines.join("\n");
-    })
-    .join("\n\n");
+export function renderIndexToYAML(results: ResolvedIndexGroup[]): string {
+  return stringifyYAML(results);
 }
 
 function getOrderedChildren(node: TreeNode): IterableIterator<TreeNode> {
@@ -99,15 +87,15 @@ export function renderTreeToCompactString(root: TreeNode): string {
 }
 
 /**
- * Convert tree node to JSON representation recursively
+ * Convert tree node to JS object representation recursively.
  */
-function nodeToJSONNode(node: TreeNode): ContextTreeJSONNode {
+function treeNodeToObjectNode(node: TreeNode): ContextTreeJSONNode {
   const children = Array.from(getOrderedChildren(node));
 
   return {
     path: node.path,
     description: node.description,
-    children: children.length > 0 ? children.map((c) => nodeToJSONNode(c)) : undefined,
+    children: children.length > 0 ? children.map((c) => treeNodeToObjectNode(c)) : undefined,
   };
 }
 
@@ -117,14 +105,21 @@ function nodeToJSONRoot(node: TreeNode): ContextTreeJSONRoot {
   return {
     root: {
       description: node.description,
-      children: children.map((c) => nodeToJSONNode(c)),
+      children: children.map((c) => treeNodeToObjectNode(c)),
     },
   };
 }
 
 /**
- * Render tree as JSON structure
+ * Render tree as a JavaScript object.
  */
-export function renderTreeToJSON(root: TreeNode): ContextTreeJSONRoot {
+export function renderTreeToObject(root: TreeNode): ContextTreeJSONRoot {
   return nodeToJSONRoot(root);
+}
+
+/**
+ * Render tree as a pretty-printed JSON string.
+ */
+export function renderTreeToJSON(root: TreeNode): string {
+  return stringifyJSON(renderTreeToObject(root));
 }
