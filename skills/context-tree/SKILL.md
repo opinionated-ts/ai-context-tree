@@ -25,25 +25,43 @@ bunx ai-context-tree --root /absolute/path/to/project
 
 Use `--root` with the absolute path of the project to scan.
 
-## Output Formats
+## Output formats
 
-Choose the format based on how you intend to use the result:
+Available formats (CLI default: `json`):
 
-- `tree` — Human-readable tree with descriptions. **Default.**
-- `compact-tree` — Compact version with one path per line.
-- `json` — Machine-readable structure for programmatic use or preservation.
+- `compact-tree` — concise, one-path-per-line overview (best for agents and quick scanning).
+- `json` — machine-readable structure for storage or programmatic processing.
+- `yaml` — structured, human-friendly format; prefer when the project is YAML-centric.
+- `tree` — human-readable tree with descriptions; best for explanations and teaching.
+
+Examples:
 
 ```bash
-bunx ai-context-tree --format tree # default
 bunx ai-context-tree --format compact-tree
-bunx ai-context-tree --format json
+bunx ai-context-tree --format json # default
+bunx ai-context-tree --format yaml
+bunx ai-context-tree --format tree
 ```
+
+## Agent format preference
+
+When an automated agent or CLI-driven workflow invokes the main command to fetch project context, prefer output formats according to the intended consumer and clarity of the structure:
+
+- **First preference — `compact-tree`:** A concise, one-path-per-line overview that's easy to scan and parse; use this by default for automated context-gathering.
+- **If the agent intends to preserve or programmatically consume the structure — `json`:** Use when the output will be stored, diffed, or passed to other programs.
+- **If the structure is unclear or the output must teach/explain the project to humans:** present a human-friendly format:
+  - If the project is YAML-centric (many `.yml`/`.yaml` files or established YAML configs), prefer **`yaml`** to align with project conventions.
+  - Otherwise prefer **`tree`** for readability and explanations.
+
+Example decision flow for agents: `compact-tree` -> `json` (if storing/processing) -> if unclear: `yaml` (when project uses YAML) else `tree`.
+
+Agents should follow this preference order when deciding which format to request from the CLI, and may include a short rationale when returning a human-facing result (for example: "structure unclear — returning `tree` for clarity").
 
 ## Options
 
-- `--root <path>` — Project directory to scan. Defaults to the current working directory.
-- `--format <tree|compact-tree|json>` — Output format. Defaults to `tree`.
-- `--depth <number>` — Maximum scan depth. Defaults to `10`.
+- `-r, --root=<path>` - Root directory to scan (Default: current directory)
+- `-f, --format=<tree|json|compact-tree|yaml>` - Output format for the generated context tree (Default: json)
+- `-d, --depth=<number>` - Maximum directory depth to scan (Default: 10)
 
 ## What the Tree Shows
 
