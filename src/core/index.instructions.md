@@ -1,10 +1,18 @@
 ---
-description: "core implementation for `ai-context-tree`"
+description: "Core runtime and CLI logic for `ai-context-tree`"
 ---
 
-- [index.ts](./index.ts) - Main entry point for generating the context tree output.
-- [parse.ts](./parse.ts) - Discovers and parses `index.instructions.md` files across the project.
-- [tree.ts](./tree.ts) - Builds the hierarchical project structure from the parsed entries.
-- [render.ts](./render.ts) - Formats the tree for terminal output or export modes.
-- [types.ts](./types.ts) - Shared TypeScript contracts for nodes, entries, and render data.
-- [gitignore.ts](./gitignore.ts) - Filters files and directories according to `.gitignore` rules.
+This directory contains the pipeline that discovers, parses, and renders context indexes.
+
+Files in this folder:
+
+- [cli.ts](./cli.ts) - CLI entry point for scanning a project and generating the output tree.
+- [file.ts](./file.ts) - File discovery, nearest-index resolution, and path normalization helpers.
+- [gitignore.ts](./gitignore.ts) - `.gitignore` filtering for context discovery and project scanning.
+- [index.ts](./index.ts) - Public exports for the library surface.
+- [parse.ts](./parse.ts) - Recursively finds `index.instructions.md` files and extracts their metadata.
+- [render.ts](./render.ts) - Formats the context tree for terminal, compact, or JSON output.
+- [tree.ts](./tree.ts) - Builds the hierarchical project structure from parsed entries.
+- [types.ts](./types.ts) - Shared contracts for index entries, nodes, and render payloads.
+
+The directory intentionally stays focused on the central implementation details; supporting utilities live in [../utils](../utils).
