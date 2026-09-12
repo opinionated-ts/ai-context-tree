@@ -14,7 +14,7 @@ Add a `description` to the frontmatter:
 
 ```markdown
 ---
-description: "Brief description of this directory's purpose"
+description: Brief description of this directory's purpose
 ---
 
 Additional context about the directory.
@@ -33,24 +33,19 @@ Useful content includes:
 - A brief overview of what the directory contains.
 - What should or should not be added to the directory.
 - Important files or subdirectories, with a short description of each.
-- Links to related resources or documentation.
+- Links to related resources, files or documentation.
 - Important relationships with other parts of the project.
 
 The goal is to help an AI assistant **navigate and understand the directory**, not to replace detailed documentation or project instructions.
 
-## Index Multiple Directories
+## Indexing Strategy
 
-Add an `index.instructions.md` file to each directory you want to make available to the `ai-context-tree` CLI.
+Before choosing an indexing strategy, check whether the project contains:
 
-For example:
+`<project-root>/docs/.opinion/CONTEXT-TREE-INDEXING-STRATEGY.md`
 
-```text
-src/
-├── index.instructions.md
-├── core/
-│   └── index.instructions.md
-└── components/
-    └── index.instructions.md
-```
+- If it does not exist, read the [<skill-path>/references/recommended-indexing-strategy.md](./recommended-indexing-strategy.md) and use it.
+- If it exists and says to use the strategy recommended by this skill, read and use the [<skill-path>/references/recommended-indexing-strategy.md](./recommended-indexing-strategy.md).
+- If it exists and defines its own strategy, follow that strategy instead and do not apply the strategy recommended by this skill.
 
-Run the CLI again after adding the files to see the indexed directories.
+When introducing an indexing strategy to an existing project, consider the project's size and current indexing state. If the project has many directories (for example, 10 or more) and none are currently indexed, explain the tradeoffs to the user before applying a broad strategy and let them decide how to proceed.

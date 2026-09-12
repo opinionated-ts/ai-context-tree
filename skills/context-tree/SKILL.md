@@ -5,11 +5,11 @@ description: Use this skill to understand where relevant information lives in th
 
 # Context Tree CLI
 
-The `ai-context-tree` CLI reads `index.instructions.md` files in a project and generates a tree showing their locations and descriptions. Each folder with a description is documented, and you can explore more details by reading its corresponding `index.instructions.md` file.
+The `ai-context-tree` CLI reads `index.instructions.md` files and generates a contextual map of the project structure. Each indexed folder includes a description of its purpose and contents, with its corresponding `index.instructions.md` providing additional context.
 
 ## How to Use the CLI
 
-The CLI is provided by the `ai-context-tree` package and can be run using your preferred package manager.
+The CLI is provided by the `ai-context-tree` package and can be run using your preferred package manager:
 
 ```bash
 bunx ai-context-tree
@@ -23,49 +23,20 @@ If the skill and project are in different locations, pass the project root expli
 bunx ai-context-tree --root /absolute/path/to/project
 ```
 
-Use `--root` with the absolute path of the project to scan for context.
+Use `--root` with the absolute path of the project to scan.
 
 ## Output Formats
 
 Choose the format based on how you intend to use the result:
 
 - `tree` — Human-readable tree with descriptions. **Default.**
-- `compact-tree` — Compact version of the tree, with one path per line.
+- `compact-tree` — Compact version with one path per line.
 - `json` — Machine-readable structure for programmatic use or preservation.
-
-Examples:
 
 ```bash
 bunx ai-context-tree --format tree # default
 bunx ai-context-tree --format compact-tree
 bunx ai-context-tree --format json
-```
-
-## What the Tree Shows
-
-The tree is a **contextual map, not a complete directory listing**.
-
-It only contains folders that have been previously indexed for the CLI. Each entry contains:
-
-- **Path** — Location relative to the project root.
-- **Description** — Short explanation of the folder's purpose and contents.
-
-If the CLI produces no results, [learn how to index content so it is available to the CLI](./references/indexing-context.md).
-
-## Exploring Context
-
-Each folder shown by the CLI with a description has a corresponding `index.instructions.md` file at the same level. Read it to get more detailed information about the folder and its contents.
-
-For example, if the tree shows:
-
-```text
-src/core — Core utilities
-```
-
-The corresponding context file is:
-
-```text
-src/core/index.instructions.md
 ```
 
 ## Options
@@ -74,49 +45,45 @@ src/core/index.instructions.md
 - `--format <tree|compact-tree|json>` — Output format. Defaults to `tree`.
 - `--depth <number>` — Maximum scan depth. Defaults to `10`.
 
+## What the Tree Shows
+
+The tree is a **contextual map, not a complete directory listing**.
+
+It only contains folders that have been indexed for the CLI. Each entry contains:
+
+- **Path** — Location relative to the project root.
+- **Description** — Short explanation of the folder's purpose and contents.
+
+Each displayed folder with a description has a corresponding `index.instructions.md` file at the same level. Read it when more detailed context is needed.
+
+For example:
+
+```text
+src/core — Core utilities
+```
+
+corresponds to:
+
+```text
+src/core/index.instructions.md
+```
+
+## References
+
+Use the appropriate reference when more guidance is needed:
+
+- **Indexing context** — Read [`<skill-path>/references/indexing-context.md`](./references/indexing-context.md) when relevant content is missing from the tree and needs to be made available to Context Tree, or when creating new folders/files that should be indexed. This is the guide for learning how to create, expand, reorganize, or otherwise maintain indexes so their content can be discovered through the tree. If the tree does not show something you need, it may simply not be indexed yet.
+- **Modifying indexed files** — Read [`<skill-path>/references/modifying-indexed-files.md`](./references/modifying-indexed-files.md) when you have modified files or directories that are already covered by indexes, especially before saving work or creating a commit. It helps identify which indexes are associated with the changed paths and determine whether those indexes need to be updated to reflect the changes. Use it to verify that staged or unstaged changes are properly represented by the existing indexes before finalizing the work.
+
+Do not duplicate the procedures from these references here; read the relevant guide when its workflow applies.
+
 ## Workflow
 
 1. Generate the tree.
 2. Use it to identify relevant folders and where information lives.
-3. Read the `index.instructions.md` files for folders that require more context.
-4. Use that context to guide further exploration.
+3. Read the corresponding `index.instructions.md` files when more context is needed.
+4. If relevant content is missing from the tree or new folders/files need to be indexed, read [`<skill-path>/references/indexing-context.md`](./references/indexing-context.md).
+5. When modifying files or directories already covered by indexes, especially before saving work or creating a commit, read [`<skill-path>/references/modifying-indexed-files.md`](./references/modifying-indexed-files.md).
+6. Use the resulting context to guide further exploration and work.
 
-## Resolving Associated Indexes
-
-Use `index-for` to resolve which `index.instructions.md` file applies to one or more paths without generating the whole tree.
-
-```bash
-ai-context-tree index-for src/core/file.ts src/core
-ai-context-tree index-for --include-parents src/core/features/api/request.ts
-ai-context-tree index-for --format json src/core/a.ts src/core/b.ts
-```
-
-The default text output groups all inputs that share the same nearest index:
-
-```text
-group: src/core
-inputs: src/core/a.ts, src/core/b.ts
-index: src/core/index.instructions.md
-parents: src/index.instructions.md, index.instructions.md
-```
-
-With `--include-parents`, the resolver includes ancestor indexes in nearest-to-farthest order from the matched directory up to the project root.
-
-The JSON output matches a machine-readable array of groups:
-
-```json
-[
-  {
-    "group": "src/core",
-    "inputs": ["src/core/a.ts", "src/core/b.ts"],
-    "index": "src/core/index.instructions.md",
-    "parents": ["src/index.instructions.md", "index.instructions.md"]
-  }
-]
-```
-
-This grouped format is easier to read than a flat list of repeated `file -> index` pairs, especially when many files share the same nearest context file.
-
-## More information
-
-If the user asks for more information about this skill, or if you need additional information to complete the task, read the [README](https://raw.githubusercontent.com/opinionated-ts/ai-context-tree/main/README.md).
+## Optional: If additional information about the CLI or skill is needed, read the [README](https://raw.githubusercontent.com/opinionated-ts/ai-context-tree/main/README.md).
