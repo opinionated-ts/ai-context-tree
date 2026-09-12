@@ -1,6 +1,6 @@
 import { defineCommand, runMain } from "citty";
 
-import { resolveIndexForPaths } from "./file";
+import { collectGitStatusPaths, resolveIndexForPaths } from "./file";
 import { generateContextTree } from "./index";
 import { findIndexFiles } from "./parse";
 import { renderIndexToJSON, renderIndexToYAML } from "./render";
@@ -26,6 +26,16 @@ const indexForCommand = defineCommand({
       alias: "s",
       description: "Stop at the first matching index and do not include parent indexes",
     },
+    ["include-staged"]: {
+      type: "boolean",
+      alias: "is",
+      description: "Include staged Git changes as additional input paths",
+    },
+    ["include-unstaged"]: {
+      type: "boolean",
+      alias: ["include-unstage", "iu"],
+      description: "Include unstaged Git changes as additional input paths",
+    },
     format: {
       type: "enum",
       alias: "f",
@@ -35,7 +45,21 @@ const indexForCommand = defineCommand({
     },
   },
   async run({ args }) {
-    const groups = await resolveIndexForPaths(args._, {
+    const inputPaths = [...args._];
+
+    const includeStaged = args["include-staged"] || false;
+    const includeUnstaged = args["include-unstaged"] || false;
+
+    if (includeStaged || includeUnstaged) {
+      inputPaths.push(
+        ...collectGitStatusPaths(args.root, {
+          includeStaged,
+          includeUnstaged,
+        }),
+      );
+    }
+
+    const groups = await resolveIndexForPaths(inputPaths, {
       root: args.root,
       skipParents: args["skip-parents"],
     });

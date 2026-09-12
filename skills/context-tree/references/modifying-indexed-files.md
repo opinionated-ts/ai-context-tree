@@ -30,6 +30,21 @@ bunx ai-context-tree index-for --skip-parents src/core/features/api/request.ts
 
 `--skip-parents` does not change where the search starts; it only stops the upward walk sooner, stops at the first matching index and ignores ancestor indexes, which is generally the default recommended behavior when using the [<skill-path>/references/recommended-indexing-strategy.md](./recommended-indexing-strategy.md).
 
+```bash
+# include staged and/or unstaged Git changes automatically
+bunx ai-context-tree index-for --root . --include-staged
+bunx ai-context-tree index-for --root . --include-unstaged
+bunx ai-context-tree index-for --root . --include-staged --include-unstaged
+```
+
+These flags add files from Git status to the input list before resolution. That makes it easy to find the nearest relevant indexes for work-in-progress changes without passing each path manually.
+
+When you also pass explicit paths, the command combines both sources:
+
+```bash
+bunx ai-context-tree index-for --root . --include-unstaged src/core/update.ts
+```
+
 ## Output Formats
 
 Choose the format based on how you intend to use the result:

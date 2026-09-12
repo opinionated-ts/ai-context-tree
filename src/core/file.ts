@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { existsSync, statSync } from "node:fs";
 import { dirname, relative, resolve, sep } from "node:path";
 
@@ -36,6 +37,11 @@ export interface ResolveIndexForPathsOptions {
   skipParents?: boolean;
 }
 
+export interface ResolveGitStatusPathsOptions {
+  includeStaged?: boolean;
+  includeUnstaged?: boolean;
+}
+
 interface ResolvedIndex {
   group: string;
   index: string;
@@ -44,6 +50,54 @@ interface ResolvedIndex {
 interface PathResolution {
   nearest: ResolvedIndex | null;
   parents: string[];
+}
+
+/**
+ * Collect changed paths from Git status for the current repository.
+ */
+export function collectGitStatusPaths(
+  root: string,
+  options: ResolveGitStatusPathsOptions = {},
+): string[] {
+  if (!options.includeStaged && !options.includeUnstaged) {
+    return [];
+  }
+
+  const paths = new Set<string>();
+
+  const commands: string[][] = [];
+
+  if (options.includeStaged) {
+    commands.push(["diff", "--name-only", "--cached"]);
+  }
+
+  if (options.includeUnstaged) {
+    commands.push(["diff", "--name-only"]);
+    commands.push(["ls-files", "--others", "--exclude-standard"]);
+  }
+
+  for (const command of commands) {
+    try {
+      const output = execFileSync("git", ["-C", root, ...command], {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+      });
+
+      for (const rawEntry of output.split(/\r?\n/)) {
+        const entry = rawEntry.trim();
+
+        if (!entry) {
+          continue;
+        }
+
+        paths.add(entry.replace(/\\/g, "/"));
+      }
+    } catch {
+      return [];
+    }
+  }
+
+  return [...paths].toSorted((left, right) => left.localeCompare(right));
 }
 
 /**
@@ -136,9 +190,16 @@ function createIndexResolver(
    * an absolute input path.
    */
   const resolvePath = (absoluteInput: string): PathResolution | null => {
-    const startDirectory = statSync(absoluteInput).isDirectory()
-      ? absoluteInput
+    const inputExists = existsSync(absoluteInput);
+    const startDirectory = inputExists
+      ? statSync(absoluteInput).isDirectory()
+        ? absoluteInput
+        : dirname(absoluteInput)
       : dirname(absoluteInput);
+
+    if (!existsSync(startDirectory)) {
+      return null;
+    }
 
     const cached = resolutionCache.get(startDirectory);
 
@@ -236,10 +297,6 @@ export async function resolveIndexForPaths(
     const normalized = normalizeProjectRelativePath(root, rawInput);
 
     if (!normalized || isIgnored(normalized.absolute)) {
-      continue;
-    }
-
-    if (!existsSync(normalized.absolute)) {
       continue;
     }
 
