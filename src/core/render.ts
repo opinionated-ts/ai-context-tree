@@ -17,6 +17,10 @@ export function renderIndexToYAML(results: ResolvedIndexGroup[]): string {
   return stringifyYAML(results);
 }
 
+export function renderTreeToYAML(root: TreeNode): string {
+  return stringifyYAML(renderTreeToObject(root));
+}
+
 function getOrderedChildren(node: TreeNode): IterableIterator<TreeNode> {
   return node.children.values();
 }

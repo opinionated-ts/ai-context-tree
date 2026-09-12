@@ -64,7 +64,7 @@ const main = defineCommand({
     format: {
       type: "enum",
       alias: "f",
-      options: ["tree", "json", "compact-tree"],
+      options: ["tree", "json", "compact-tree", "yaml"],
       default: "json",
       description: "Output format for the generated context tree",
     },
@@ -104,15 +104,15 @@ const main = defineCommand({
     const count = `\x1b[32m${entries.length}\x1b[0m`;
 
     const treeOutput = await generateContextTree({ root, format, depth: maxDepth, entries });
-    if (format !== "json") {
-      console.info(`${prefix} Searching in: ${path}`);
-      console.info(`${prefix} Found ${count} index files`);
-
-      console.log("\n" + treeOutput);
+    if (format === "json" || format === "yaml") {
+      console.log(treeOutput);
       return;
     }
 
-    console.log(treeOutput);
+    console.info(`${prefix} Searching in: ${path}`);
+    console.info(`${prefix} Found ${count} index files`);
+
+    console.log("\n" + treeOutput);
   },
 });
 

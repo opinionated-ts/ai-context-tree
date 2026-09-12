@@ -1,7 +1,12 @@
 import type { ContextIndexEntry, ContextTreeJSONRoot } from "@/types";
 
 import { findIndexFiles } from "@/parse";
-import { renderTreeToCompactString, renderTreeToJSON, renderTreeToString } from "@/render";
+import {
+  renderTreeToCompactString,
+  renderTreeToJSON,
+  renderTreeToString,
+  renderTreeToYAML,
+} from "@/render";
 import { buildContextTree } from "@/tree";
 
 import {
@@ -19,16 +24,17 @@ import {
  * @param options.root - Root directory to scan. Defaults to the current working directory.
  * @param options.format - Output format:
  * * `json`: returns a pretty-printed JSON string.
+ * * `yaml`: returns a YAML string.
  * * `tree`: returns a human-readable tree as a string.
  * * `compact-tree`: returns one relative path per line.
  * @param options.depth - Maximum directory depth to scan.
  *
- * @returns A JSON string for `json`, or a formatted string for `tree` and
- * `compact-tree`.
+ * @returns A JSON/YAML string for machine-readable formats, or a formatted string for
+ * `tree` and `compact-tree`.
  */
 async function generateContextTree(options?: {
   root?: string;
-  format?: "json" | "tree" | "compact-tree";
+  format?: "json" | "tree" | "compact-tree" | "yaml";
   depth?: number;
 
   /* @internal */
@@ -49,6 +55,10 @@ async function generateContextTree(options?: {
 
   if (format === "compact-tree") {
     return renderTreeToCompactString(tree);
+  }
+
+  if (format === "yaml") {
+    return renderTreeToYAML(tree);
   }
 
   return renderTreeToJSON(tree);
