@@ -219,13 +219,13 @@ Useful for scripts, automation, and developer tools:
 npx ai-context-tree --root <path> --format <format> --depth <number>
 ```
 
-| Option                                | Description             |
-| ------------------------------------- | ----------------------- |
-| `--root <path>`                       | Repository root to scan |
-| `--format <tree\|compact-tree\|json>` | Output format           |
-| `--depth <number>`                    | Maximum directory depth |
+| Option                                      | Description             |
+| ------------------------------------------- | ----------------------- |
+| `--root <path>`                             | Repository root to scan |
+| `--format <tree\|compact-tree\|json\|yaml>` | Output format           |
+| `--depth <number>`                          | Maximum directory depth |
 
-The default format is `tree`.
+The default format is `json`.
 
 ## How It Works
 
