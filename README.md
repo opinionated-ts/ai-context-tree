@@ -251,7 +251,9 @@ The goal is simple:
 
 ## Contributing
 
-Contributions, issues, and pull requests are welcome.
+Contributions are welcome, including bug reports, feature suggestions, discussions, and pull requests.
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the contribution overview and workflow.
 
 ## License
 
