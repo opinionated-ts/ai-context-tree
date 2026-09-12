@@ -84,7 +84,7 @@ The skill guides the agent through the context discovery workflow:
 3. Read their `index.instructions.md`.
 4. Use that context to guide further exploration.
 
-The user or maintainer decides which directories should be indexed and included in the map. The skill helps explain and navigate that structure, but it does not automatically decide the repository's indexing policy.
+The user or maintainer decides which directories should be indexed and included in the map. The skill helps explain and navigate that structure.
 
 For most AI coding agent workflows, the skill is sufficient and is likely the only thing you need.
 
@@ -95,9 +95,9 @@ You can also use `ai-context-tree` directly when you want to generate or consume
 Generate a context map with the package manager of your choice:
 
 ```bash
-npx ai-context-tree
-# pnpm dlx ai-context-tree
-# bunx ai-context-tree
+npx ai-context-tree --format tree
+# pnpm dlx ai-context-tree --format tree
+# bunx ai-context-tree --format tree
 ```
 
 To scan a different directory:
@@ -168,49 +168,8 @@ Choose the representation that fits your workflow:
 ```bash
 npx ai-context-tree --format tree
 npx ai-context-tree --format compact-tree
-npx ai-context-tree --format json
-```
-
-### Tree
-
-Human- and agent-friendly:
-
-```text
-src
-├── core — Core application logic
-├── features — Product features and domain workflows
-├── lib — Shared libraries and utilities
-└── tests — Test suites and fixtures
-```
-
-### Compact Tree
-
-The shortest representation:
-
-```text
-src/core — Core application logic
-src/features — Product features and domain workflows
-src/lib — Shared libraries and utilities
-src/tests — Test suites and fixtures
-```
-
-### JSON
-
-Useful for scripts, automation, and developer tools:
-
-```json
-{
-  "root": {
-    "description": "Project root",
-    "children": [
-      {
-        "path": "src/core",
-        "description": "Core application logic",
-        "children": []
-      }
-    ]
-  }
-}
+npx ai-context-tree --format json # default
+npx ai-context-tree --format yaml
 ```
 
 ## CLI
