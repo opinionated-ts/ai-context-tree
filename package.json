@@ -1,5 +1,24 @@
 {
   "name": "ai-context-tree",
+  "description": "Give humans and AI coding agents a map of your repository — turn 'index.instructions.md' files into a navigable context map.",
+  "keywords": [
+    "ai",
+    "cli",
+    "code-navigation",
+    "context-discovery",
+    "context-map",
+    "context-navigation",
+    "context-tree",
+    "directory-navigation",
+    "index-instructions",
+    "index.instructions.md",
+    "opinionated-ts",
+    "repository-tools",
+    "rich-tree",
+    "skill",
+    "tree",
+    "typescript"
+  ],
   "bugs": {
     "url": "https://github.com/opinionated-ts/ai-context-tree/issues",
     "email": "danhezcode@gmail.com"
